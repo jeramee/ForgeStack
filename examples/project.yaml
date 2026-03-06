@@ -1,0 +1,12 @@
+
+project:
+  name: ai-dashboard
+  env: docker
+
+plugins:
+  - react
+  - fastapi
+  - postgres
+
+react:
+  port: 5173

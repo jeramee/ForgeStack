@@ -1,0 +1,7 @@
+[project]
+name = "devscaffold-auth"
+version = "0.1.0"
+description = "Auth plugin for DevScaffold"
+
+[project.entry-points."devscaffold.plugins"]
+auth = "devscaffold_auth.plugin:plugin"

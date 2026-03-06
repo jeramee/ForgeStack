@@ -1,0 +1,6 @@
+[project]
+name = "devscaffold-redis"
+version = "0.1.0"
+
+[project.entry-points."devscaffold.plugins"]
+redis = "devscaffold_redis.plugin:plugin"

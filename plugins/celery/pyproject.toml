@@ -1,0 +1,6 @@
+[project]
+name = "devscaffold-celery"
+version = "0.1.0"
+
+[project.entry-points."devscaffold.plugins"]
+celery = "devscaffold_celery.plugin:plugin"

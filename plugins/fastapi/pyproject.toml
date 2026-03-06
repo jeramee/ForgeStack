@@ -1,0 +1,12 @@
+
+[project]
+name = "devscaffold-fastapi"
+version = "0.1.0"
+dependencies = ["devscaffold"]
+
+[project.entry-points."devscaffold.plugins"]
+fastapi = "devscaffold_fastapi.plugin:plugin"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
