@@ -4,11 +4,16 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Status](https://img.shields.io/badge/status-active-development-orange)
 
+
 ForgeStack is a modular project generation platform that builds complete application stacks from composable plugins.
 
 Instead of manually wiring APIs, frontends, databases, queues, and infrastructure, ForgeStack generates a fully wired development stack from a simple configuration file.
 
 ForgeStack acts as a stack factory for modern development environments.
+
+**TL;DR:** 
+
+Once ForgeStack is configured, you can generate a fully wired, production-ready full-stack project with a single command. Frontend, backend, databases, workers, and infrastructure are created and connected automatically.
 
 ---
 
@@ -151,7 +156,7 @@ LICENSE
 
 Future improvements:
 
-- plugin marketplace
+- plugin/template marketplace
 - PyPI plugin discovery
 - graphical stack builder
 - CI/CD integrations
