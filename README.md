@@ -13,7 +13,7 @@ ForgeStack acts as a stack factory for modern development environments.
 
 **TL;DR:** 
 
-Once ForgeStack is configured, you can generate a fully wired, production-ready full-stack project with a single command. Frontend, backend, databases, workers, and infrastructure are created and connected automatically.
+Once ForgeStack is configured, you can generate a fully wired, production-ready full-stack project with a single command. Frontend, backend, databases, workers, and infrastructure are created and connected automatically!
 
 ---
 
@@ -48,11 +48,14 @@ All components are automatically connected.
 
 Create a virtual environment.
 
+```
 python -m venv .venv
 source .venv/bin/activate
+```
 
 Install ForgeStack and built-in plugins.
 
+```
 pip install -e core
 pip install -e plugins/react
 pip install -e plugins/fastapi
@@ -66,6 +69,7 @@ Start the generated stack.
 
 cd ai-dashboard
 docker compose up
+```
 
 ---
 
@@ -89,6 +93,7 @@ devscaffold apply project.yaml
 
 ## CLI Commands
 
+```
 devscaffold new fullstack myapp
 devscaffold apply project.yaml
 devscaffold plugin-list
@@ -97,6 +102,7 @@ devscaffold add redis
 devscaffold add celery
 devscaffold graph
 devscaffold doctor
+```
 
 ---
 
@@ -114,9 +120,9 @@ Generated Project
 
 Plugins support lifecycle hooks:
 
-before_generate
-plan
-after_generate
+- before_generate
+- plan
+- after_generate
 
 ---
 
@@ -132,6 +138,7 @@ Plugins can:
 Example dependency declaration:
 
 class CeleryPlugin:
+
     requires = ["redis"]
 
 ForgeStack resolves dependencies automatically.
@@ -140,15 +147,16 @@ ForgeStack resolves dependencies automatically.
 
 ## Repository Structure
 
+```
 forgestack/
-
-core/
-plugins/
-examples/
-ai-dashboard/
-ai-startup/
-README.md
-LICENSE
+    core/
+    plugins/
+    examples/
+    ai-dashboard/
+    ai-startup/
+    README.md
+    LICENSE
+```
 
 ---
 
