@@ -1,21 +1,31 @@
 from pathlib import Path
-from .plugin_api import PluginContext
-
 import yaml
 
 
-class Context:
+class PluginContext:
+    """
+    Runtime context passed to plugins during generation.
+    """
 
     def __init__(self, cfg, root):
 
         self.cfg = cfg
         self.root = Path(root)
+
         self.required_plugins = []
+
+    # --------------------------------------------------
+    # Dependency injection
+    # --------------------------------------------------
 
     def require(self, plugin):
 
         if plugin not in self.required_plugins:
             self.required_plugins.append(plugin)
+
+    # --------------------------------------------------
+    # File operations
+    # --------------------------------------------------
 
     def append_file(self, path, text):
 
@@ -28,6 +38,10 @@ class Context:
 
         if text not in existing:
             f.write_text(existing + text)
+
+    # --------------------------------------------------
+    # YAML patching
+    # --------------------------------------------------
 
     def patch_yaml(self, path, patch):
 
