@@ -1,4 +1,4 @@
-from forgestack.core.cli import run_cli
+from forgestack.core.devmake import run_cli
 
 
 if __name__ == "__main__":
