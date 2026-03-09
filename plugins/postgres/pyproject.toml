@@ -1,10 +1,12 @@
-
 [project]
 name = "devscaffold-postgres"
 version = "0.1.0"
 dependencies = ["devscaffold"]
 
 [project.entry-points."devscaffold.plugins"]
+postgres = "devscaffold_postgres.plugin:plugin"
+
+[project.entry-points."forgestack.plugins"]
 postgres = "devscaffold_postgres.plugin:plugin"
 
 [build-system]

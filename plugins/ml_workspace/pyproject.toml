@@ -1,13 +1,13 @@
 [project]
-name = "devscaffold-redis"
+name = "devscaffold-ml-workspace"
 version = "0.1.0"
 dependencies = ["devscaffold"]
 
 [project.entry-points."devscaffold.plugins"]
-redis = "devscaffold_redis.plugin:plugin"
+ml-workspace = "devscaffold_ml_workspace.plugin:plugin"
 
 [project.entry-points."forgestack.plugins"]
-redis = "devscaffold_redis.plugin:plugin"
+ml-workspace = "devscaffold_ml_workspace.plugin:plugin"
 
 [build-system]
 requires = ["setuptools>=68"]

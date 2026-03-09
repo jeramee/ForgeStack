@@ -1,315 +1,179 @@
+from __future__ import annotations
 
-import os
-import typer
-import subprocess
-import socket
 import shutil
+import socket
+import subprocess
 from pathlib import Path
+from typing import Optional
+
+import typer
 
 from devscaffold.core.config import load_config
-from devscaffold.core.registry import load_plugins, list_available_plugins
-from devscaffold.core.plan import merge_plans
-from devscaffold.core.files import safe_mkdir, safe_write_text
-from devscaffold.core.compose import render_compose_yaml
-from devscaffold.core.shell import run_commands
+from devscaffold.core.executor import DefaultExecutor
+from devscaffold.core.output import ConsoleRenderer, JsonRenderer
+from devscaffold.core.plan import DefaultPlanner
+from devscaffold.core.registry import RegistryManager
+from devscaffold.core.state import StateStore
+from devscaffold.core.validation import ConfigValidator, GraphValidator, PlanValidator
+from devscaffold.core.graph import GraphRenderer
 
-app = typer.Typer(help="DevScaffold — agnostic project orchestrator")
+app = typer.Typer(help="ForgeStack — CLI operating system for development stacks")
+plugin_app = typer.Typer(help="Plugin commands")
+app.add_typer(plugin_app, name="plugin")
 
-def ensure_plugin_installed(plugin: str):
-    """
-    Ensure a plugin is installed. If missing, install from PyPI.
-    """
 
-    try:
-        load_plugins([plugin])
+def _build_services() -> tuple[RegistryManager, DefaultPlanner, DefaultExecutor, StateStore]:
+    return RegistryManager.default(), DefaultPlanner(), DefaultExecutor(), StateStore()
+
+
+def _load_and_validate_config(config_file: str):
+    stack = load_config(config_file)
+    errors = ConfigValidator().validate(stack)
+    if errors:
+        raise typer.BadParameter("\n".join(errors))
+    return stack
+
+
+def _build_plan(stack, registry: RegistryManager):
+    planner = DefaultPlanner()
+    graph, ordered_plugins, plan = planner.create_plan(stack, registry)
+
+    graph_errors = GraphValidator().validate(graph, registry)
+    if graph_errors:
+        raise typer.BadParameter("\n".join(graph_errors))
+
+    plan_errors = PlanValidator().validate(plan)
+    if plan_errors:
+        raise typer.BadParameter("\n".join(plan_errors))
+
+    return graph, ordered_plugins, plan
+
+
+@app.command()
+def plan(
+    config_file: str = typer.Argument(..., help="Path to stack YAML"),
+    json_output: bool = typer.Option(False, "--json", help="Emit machine-readable JSON"),
+):
+    stack = _load_and_validate_config(config_file)
+    registry, _planner, _executor, _state = _build_services()
+    graph, ordered_plugins, plan_obj = _build_plan(stack, registry)
+
+    if json_output:
+        typer.echo(JsonRenderer().render_plan(plan_obj, stack=stack, plugins=ordered_plugins))
         return
-    except RuntimeError:
-        pass
 
-    package = f"devscaffold-{plugin}"
+    typer.echo(ConsoleRenderer().render_plan(plan_obj, stack=stack, plugins=ordered_plugins))
 
-    typer.echo(f"Plugin '{plugin}' not installed.")
-    typer.echo(f"Installing {package}...")
-
-    subprocess.run(
-        ["pip", "install", package],
-        check=True
-    )
-
-    typer.echo(f"{package} installed.")
-
-def resolve_plugin_dependencies(plugin: str):
-    """
-    Resolve plugin dependency chain.
-    """
-
-    resolved = []
-    to_process = [plugin]
-
-    while to_process:
-
-        current = to_process.pop(0)
-
-        if current in resolved:
-            continue
-
-        ensure_plugin_installed(current)
-
-        plugin_obj = load_plugins([current])[0]
-
-        resolved.append(current)
-
-        deps = getattr(plugin_obj, "requires", [])
-
-        for dep in deps:
-            if dep not in resolved:
-                to_process.append(dep)
-
-    return resolved
 
 @app.command()
-def apply(config_file: str, force: bool=False, run: bool=True):
+def apply(
+    config_file: str = typer.Argument(..., help="Path to stack YAML"),
+    root: Optional[str] = typer.Option(None, help="Output directory. Defaults to stack name."),
+    force: bool = typer.Option(False, help="Allow writing into an existing directory."),
+    skip_commands: bool = typer.Option(False, help="Skip post-generation shell commands."),
+):
+    stack = _load_and_validate_config(config_file)
+    registry, _planner, executor, state = _build_services()
+    _graph, ordered_plugins, plan_obj = _build_plan(stack, registry)
 
-    cfg = load_config(config_file)
-    name = cfg["project"]["name"]
+    workspace_root = Path(root or stack.name)
+    if workspace_root.exists() and any(workspace_root.iterdir()) and not force:
+        raise typer.BadParameter(f"Folder '{workspace_root}' exists and is not empty. Use --force to continue.")
 
-    if os.path.exists(name) and not force:
-        raise typer.BadParameter(f"Folder '{name}' exists. Use --force to overwrite")
+    result = executor.apply(plan_obj, workspace_root=workspace_root, run_commands=not skip_commands)
+    state.write(stack_name=stack.name, workspace_root=workspace_root, files=result.written_files, plan=plan_obj)
+    typer.echo(ConsoleRenderer().render_apply_summary(stack=stack, plugins=ordered_plugins, result=result, workspace_root=workspace_root))
 
-    safe_mkdir(name, exist_ok=True)
-
-    # Load plugins
-    plugins = load_plugins(cfg.get("plugins", []))
-
-    # Context object passed to plugins
-    class Context:
-        def __init__(self, cfg, root):
-            self.cfg = cfg
-            self.root = root
-
-        def append_file(self, rel_path, text):
-            path = os.path.join(self.root, rel_path)
-
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-
-            existing = ""
-            if os.path.exists(path):
-                with open(path) as f:
-                    existing = f.read()
-
-            if text not in existing:
-                with open(path, "a") as f:
-                    f.write(text)
-
-    ctx = Context(cfg, name)
-
-    # BEFORE HOOK
-    for p in plugins:
-        if hasattr(p, "before_generate"):
-            p.before_generate(ctx)
-
-    # BUILD PLANS
-    plans = []
-    for p in plugins:
-        if hasattr(p, "plan"):
-            plans.append(p.plan(ctx))
-
-    plan = merge_plans(plans)
-
-    # WRITE FILES
-    for folder in plan.folders:
-        safe_mkdir(os.path.join(name, folder), exist_ok=True)
-
-    for f in plan.files:
-        safe_write_text(os.path.join(name, f.path), f.content, overwrite=True)
-
-    # DOCKER COMPOSE
-    if plan.compose:
-        compose = render_compose_yaml(plan.compose)
-        safe_write_text(os.path.join(name,"docker-compose.yml"), compose, overwrite=True)
-
-    # POST GENERATE HOOK
-    for p in plugins:
-        if hasattr(p, "after_generate"):
-            p.after_generate(ctx)
-
-    # RUN COMMANDS
-    if run:
-        run_commands(plan.commands, cwd=name)
-
-    typer.echo(f"Project created: {name}")
 
 @app.command()
+def graph(
+    config_file: str = typer.Argument(..., help="Path to stack YAML"),
+    json_output: bool = typer.Option(False, "--json", help="Emit machine-readable JSON"),
+):
+    stack = _load_and_validate_config(config_file)
+    registry, _planner, _executor, _state = _build_services()
+    planner = DefaultPlanner()
+    graph_obj, ordered_plugins, _plan = planner.create_plan(stack, registry)
+
+    if json_output:
+        typer.echo(JsonRenderer().render_graph(graph_obj, ordered_plugins))
+        return
+
+    typer.echo(GraphRenderer().render(graph_obj, ordered_plugins))
+
+
+@app.command("plugin-list")
 def plugin_list():
-    for p in list_available_plugins():
-        print(p)
+    registry, _planner, _executor, _state = _build_services()
+    for meta in registry.discover():
+        typer.echo(f"{meta.name:<14} {meta.version:<8} deps={','.join(meta.requires) or '-'}")
 
-@app.command()
-def new(template: str, name: str, force: bool = False):
-    """
-    Create a project from a built-in template.
 
-    Example:
-        devscaffold new fullstack myapp
-    """
+@plugin_app.command("list")
+def plugin_list_subcommand():
+    plugin_list()
 
-    from pathlib import Path
-    import shutil
-
-    base = Path(__file__).parent
-    template_file = base / "templates" / f"{template}.yaml"
-
-    if not template_file.exists():
-        typer.echo(f"Template '{template}' not found.")
-        raise typer.Exit(1)
-
-    project_dir = Path(name)
-
-    if project_dir.exists():
-        if not force:
-            typer.echo(f"Folder '{name}' exists. Use --force to overwrite")
-            raise typer.Exit(1)
-
-        shutil.rmtree(project_dir)
-
-    project_dir.mkdir()
-
-    shutil.copy(template_file, project_dir / "project.yaml")
-
-    typer.echo(f"Template '{template}' created project '{name}'")
-    typer.echo("Running scaffold...")
-
-    apply(str(project_dir / "project.yaml"), force=True)
 
 @app.command()
 def doctor():
-    """
-    Check development environment.
-    """
-
-    def exists(cmd):
+    def exists(cmd: str) -> bool:
         return shutil.which(cmd) is not None
 
-    def port_free(port):
+    def port_free(port: int) -> bool:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         result = s.connect_ex(("localhost", port))
         s.close()
         return result != 0
 
-    print("\nDevScaffold Environment Check\n")
-
-    print("Python:", "✔" if exists("python") else "✖")
-    print("Node:", "✔" if exists("node") else "✖")
-    print("npm:", "✔" if exists("npm") else "✖")
-    print("Docker:", "✔" if exists("docker") else "✖")
+    typer.echo("\nForgeStack Environment Check\n")
+    typer.echo(f"Python: {'✔' if exists('python') else '✖'}")
+    typer.echo(f"Node: {'✔' if exists('node') else '✖'}")
+    typer.echo(f"npm: {'✔' if exists('npm') else '✖'}")
+    typer.echo(f"Docker: {'✔' if exists('docker') else '✖'}")
 
     try:
-        subprocess.run(["docker", "info"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        print("Docker daemon: ✔")
-    except:
-        print("Docker daemon: ✖")
+        subprocess.run(["docker", "info"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+        typer.echo("Docker daemon: ✔")
+    except Exception:
+        typer.echo("Docker daemon: ✖")
 
-    print("Port 5173 free:", "✔" if port_free(5173) else "✖")
-    print("Port 8000 free:", "✔" if port_free(8000) else "✖")
-    print("Port 5432 free:", "✔" if port_free(5432) else "✖")
+    for port in (5173, 8000, 5432, 6379):
+        typer.echo(f"Port {port} free: {'✔' if port_free(port) else '✖'}")
 
-    print("\nDoctor check complete\n")
+    typer.echo("\nDoctor check complete\n")
+
+
+@app.command()
+def new(
+    template: str = typer.Argument(..., help="Template name"),
+    name: str = typer.Argument(..., help="Project directory"),
+    force: bool = typer.Option(False, help="Overwrite existing directory"),
+):
+    template_file = Path(__file__).parent / "templates" / f"{template}.yaml"
+    if not template_file.exists():
+        typer.echo(f"Template '{template}' not found.")
+        raise typer.Exit(1)
+
+    project_dir = Path(name)
+    if project_dir.exists():
+        if not force:
+            typer.echo(f"Folder '{name}' exists. Use --force to overwrite")
+            raise typer.Exit(1)
+        shutil.rmtree(project_dir)
+    project_dir.mkdir(parents=True, exist_ok=True)
+
+    target_config = project_dir / "project.yaml"
+    target_config.write_text(template_file.read_text(encoding="utf-8"), encoding="utf-8")
+    typer.echo(f"Template '{template}' created project '{name}'")
+    apply(str(target_config), root=str(project_dir), force=True)
+
 
 @app.command("template-list")
 def template_list():
-    """
-    List available project templates.
-    """
+    templates_dir = Path(__file__).parent / "templates"
+    for file in sorted(templates_dir.glob("*.yaml")):
+        typer.echo(file.stem)
 
-    from pathlib import Path
 
-    base = Path(__file__).parent
-    templates_dir = base / "templates"
-
-    for f in templates_dir.glob("*.yaml"):
-        print(f.stem)
-
-@app.command()
-def add(plugin: str):
-    """
-    Add a plugin to the current project.
-    """
-
-    import yaml
-    from pathlib import Path
-
-    config_file = Path("project.yaml")
-
-    if not config_file.exists():
-        typer.echo("No project.yaml found in current directory.")
-        raise typer.Exit(1)
-
-    with open(config_file) as f:
-        cfg = yaml.safe_load(f)
-
-    plugins = cfg.get("plugins", [])
-
-    if plugin in plugins:
-        typer.echo(f"Plugin '{plugin}' already enabled.")
-        return
-
-    # Auto-install plugin if missing
-    deps = resolve_plugin_dependencies(plugin)
-
-    for dep in deps:
-        if dep not in plugins:
-            plugins.append(dep)
-    cfg["plugins"] = plugins
-
-    with open(config_file, "w") as f:
-        yaml.safe_dump(cfg, f)
-
-    typer.echo(f"Added plugin '{plugin}'")
-    typer.echo("Rebuilding project...")
-
-    apply("project.yaml", force=True)
-
-@app.command()
-def graph():
-
-    import yaml
-    from pathlib import Path
-
-    config_file = Path("project.yaml")
-
-    if not config_file.exists():
-        typer.echo("No project.yaml found")
-        raise typer.Exit(1)
-
-    cfg = yaml.safe_load(config_file.read_text())
-    plugins = cfg.get("plugins", [])
-
-    visited = set()
-
-    def show(plugin, prefix=""):
-
-        if plugin in visited:
-            typer.echo(prefix + plugin + " (shared)")
-            return
-
-        visited.add(plugin)
-
-        typer.echo(prefix + plugin)
-
-        try:
-            p = load_plugins([plugin])[0]
-        except:
-            return
-
-        deps = getattr(p, "requires", [])
-
-        for i, d in enumerate(deps):
-            branch = " └ " if i == len(deps) - 1 else " ├ "
-            show(d, prefix + branch)
-
-    typer.echo("\nPlugin Dependency Graph\n")
-
-    for p in plugins:
-        show(p)
-
-    typer.echo("")
+if __name__ == "__main__":
+    app()

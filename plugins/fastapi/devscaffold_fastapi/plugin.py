@@ -1,66 +1,30 @@
-from devscaffold.core.plan import Plan, FileWrite
+from devscaffold.core.plugin_api import Plugin, PluginMetadata
 
 
-class FastAPIPlugin:
-
-    name = "fastapi"
+class FastAPIPlugin(Plugin):
+    metadata = PluginMetadata(
+        name="fastapi",
+        version="1.0.0",
+        requires=[],
+        provides=["backend"],
+        description="Generate a FastAPI backend service",
+        compatible_core=">=0.1.0",
+    )
 
     def plan(self, ctx):
-        p = Plan()
-
-        p.folders.append("backend/app")
-
-        p.files.append(
-            FileWrite(
-                "backend/app/main.py",
-                """
-from fastapi import FastAPI
-
-app = FastAPI()
-
-@app.get("/")
-def root():
-    return {"message": "hello"}
-"""
-            )
+        ctx.create_dir("backend/app", "Create backend app directory")
+        ctx.create_file(
+            "backend/app/main.py",
+            "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/\")\ndef root():\n    return {\"status\": \"ok\"}\n",
+            "Create FastAPI entrypoint",
         )
-
-        p.files.append(
-            FileWrite(
-                "backend/requirements.txt",
-                "fastapi\nuvicorn[standard]\n"
-            )
+        ctx.create_file("backend/requirements.txt", "fastapi\nuvicorn[standard]\n", "Create backend requirements")
+        ctx.create_file(
+            "backend/Dockerfile",
+            "FROM python:3.11\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"uvicorn\",\"app.main:app\",\"--host\",\"0.0.0.0\",\"--port\",\"8000\"]\n",
+            "Create backend Dockerfile",
         )
-
-        p.files.append(
-            FileWrite(
-                "backend/Dockerfile",
-                """
-FROM python:3.11
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-CMD ["uvicorn","app.main:app","--host","0.0.0.0","--port","8000"]
-"""
-            )
-        )
-
-        p.compose = {
-            "services": {
-                "backend": {
-                    "build": "./backend",
-                    "volumes": ["./backend:/app"],
-                    "ports": ["8000:8000"]
-                }
-            }
-        }
-
-        return p
+        ctx.add_service("backend", {"build": "./backend", "volumes": ["./backend:/app"], "ports": ["8000:8000"]}, "Add backend service")
 
 
 def plugin():

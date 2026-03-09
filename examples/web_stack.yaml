@@ -1,0 +1,7 @@
+name: web-stack
+plugins:
+  - react
+  - fastapi
+  - postgres
+  - redis
+  - celery
