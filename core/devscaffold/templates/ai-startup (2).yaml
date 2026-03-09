@@ -1,8 +1,0 @@
-name: ai-startup
-plugins:
-  - react
-  - fastapi
-  - postgres
-  - redis
-  - celery
-  - ml-workspace

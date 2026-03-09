@@ -63,7 +63,7 @@ pip install -e plugins/postgres
 
 Generate a project.
 
-devscaffold apply examples/project.yaml
+devmake apply examples/project.yaml
 
 Start the generated stack.
 
@@ -87,21 +87,21 @@ plugins:
 
 Run:
 
-devscaffold apply project.yaml
+devmake apply project.yaml
 
 ---
 
 ## CLI Commands
 
 ```
-devscaffold new fullstack myapp
-devscaffold apply project.yaml
-devscaffold plugin-list
-devscaffold template-list
-devscaffold add redis
-devscaffold add celery
-devscaffold graph
-devscaffold doctor
+devmake new fullstack myapp
+devmake apply project.yaml
+devmake plugin-list
+devmake template-list
+devmake add redis
+devmake add celery
+devmake graph
+devmake doctor
 ```
 
 ---
