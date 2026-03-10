@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "forgestack"
 version = "0.1.0"
@@ -13,4 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-devmake = "forgestack.cli.devmake:main"
+devmake = "forgestack.cli.main:main"
+
+[tool.setuptools]
+packages = ["forgestack"]

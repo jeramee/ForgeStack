@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path, PurePosixPath
 
+from .models import StackModel
+
 
 class ConfigValidator:
     def validate(self, stack) -> list[str]:
@@ -52,3 +54,56 @@ class PlanValidator:
                     errors.append(f"Conflicting actions for path '{action.path}': {prior} vs {action.kind}")
                 seen_paths[action.path] = action.kind
         return errors
+
+
+class StackValidationError(RuntimeError):
+    pass
+
+
+def validate_stack(model: StackModel) -> None:
+    for error in validate_stack_errors(model):
+        raise StackValidationError(error)
+
+
+def validate_stack_errors(model: StackModel) -> list[str]:
+    errors: list[str] = []
+    errors.extend(validate_service_dependencies(model))
+    errors.extend(validate_capabilities(model))
+    errors.extend(validate_port_collisions(model))
+    return errors
+
+
+def validate_service_dependencies(model: StackModel) -> list[str]:
+    errors: list[str] = []
+    for service in model.services.values():
+        for dep in service.depends_on:
+            if dep not in model.services:
+                errors.append(
+                    f"Service '{service.name}' depends on unknown service '{dep}'"
+                )
+    return errors
+
+
+def validate_capabilities(model: StackModel) -> list[str]:
+    errors: list[str] = []
+    if "worker:celery" in model.capabilities and "queue:redis" not in model.capabilities:
+        errors.append("Celery requires a queue provider such as Redis.")
+    if "backend:fastapi" in model.capabilities and "runtime:python" not in model.capabilities:
+        errors.append("FastAPI requires Python runtime capability.")
+    return errors
+
+
+def validate_port_collisions(model: StackModel) -> list[str]:
+    seen: dict[str, str] = {}
+    errors: list[str] = []
+    for service_name, service in model.services.items():
+        for port in service.ports:
+            host_port = port.split(":", 1)[0]
+            prior = seen.get(host_port)
+            if prior and prior != service_name:
+                errors.append(
+                    f"Host port '{host_port}' is used by both '{prior}' and '{service_name}'"
+                )
+            else:
+                seen[host_port] = service_name
+    return errors

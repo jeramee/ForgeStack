@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from abc import ABC
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
-from .models import PluginConfig, StackConfig
+from .models import PluginConfig, PluginContribution, StackConfig
 
 
 @dataclass(slots=True)
@@ -23,8 +24,6 @@ class Plugin(ABC):
     metadata: PluginMetadata
 
     def __init__(self, name: str | None = None, requires: list[str] | None = None):
-        # Backward compatibility for older plugins using:
-        # super().__init__("fastapi", ["python"])
         if name is not None:
             self.metadata = PluginMetadata(
                 name=name,
@@ -44,11 +43,20 @@ class Plugin(ABC):
     def requires(self) -> list[str]:
         return self.metadata.requires
 
+    @property
+    def provides(self) -> list[str]:
+        return self.metadata.provides
+
     def before_generate(self, ctx: "PluginContext") -> None:
         return None
 
     def plan(self, ctx: "PluginContext"):
         raise NotImplementedError
+
+    def contribute(self, ctx: "PluginContext") -> PluginContribution:
+        raise NotImplementedError(
+            f"Plugin '{self.name}' does not implement contribute() yet"
+        )
 
     def after_generate(self, ctx: "PluginContext") -> None:
         return None
@@ -60,6 +68,9 @@ class PluginContext:
     plugin_config: PluginConfig
     planner: Any
     workspace_root: str = "."
+    interactive: bool = True
+    capabilities: set[str] = field(default_factory=set)
+    env: dict[str, str] = field(default_factory=dict)
 
     @property
     def plugin_name(self) -> str:
@@ -72,6 +83,10 @@ class PluginContext:
     @property
     def options(self) -> dict[str, Any]:
         return self.plugin_config.options
+
+    @property
+    def root(self) -> Path:
+        return Path(self.workspace_root)
 
     def create_dir(self, path: str, description: str = "") -> None:
         from .plan import PlanAction
