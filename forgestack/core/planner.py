@@ -5,9 +5,10 @@ from .dag_executor import execute_dag
 
 class Plan:
 
-    def __init__(self):
+    def __init__(self, render_context=None):
         self.actions = []
         self._lock = threading.Lock()
+        self.render_context = render_context or {}
 
     def add(self, action):
         with self._lock:
@@ -28,11 +29,10 @@ class PluginContext:
         self.plan = plan
 
 
-def create_plan(stack_plugins, registry):
-
+def create_plan(stack_plugins, registry, render_context=None):
     graph = build_dependency_graph(stack_plugins, registry)
 
-    plan = Plan()
+    plan = Plan(render_context=render_context)
 
     def ctx_factory(plugin_name):
         return PluginContext(plan)

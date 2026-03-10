@@ -1,6 +1,11 @@
 from pathlib import Path
 import yaml
 
+from forgestack.config.validators import (
+    ValidationError,
+    validate_and_normalize_document,
+)
+
 
 def load_stack_yaml(path):
     """
@@ -36,6 +41,16 @@ def load_stack_yaml(path):
 
     if not isinstance(data, dict):
         raise RuntimeError("YAML document must parse to a mapping/object at the root")
+
+    kind = detect_kind(data)
+
+    # Only normalize known kinds here.
+    # Unknown docs are returned raw so the caller can decide what to do.
+    if kind != "unknown":
+        try:
+            data = validate_and_normalize_document(data, kind)
+        except ValidationError as e:
+            raise RuntimeError(f"Invalid {kind} document in {path}: {e}") from e
 
     return data
 

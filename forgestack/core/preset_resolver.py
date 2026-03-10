@@ -1,5 +1,10 @@
 from pathlib import Path
+from copy import deepcopy
 
+from forgestack.config.validators import (
+    ValidationError,
+    validate_and_normalize_document,
+)
 from forgestack.core.stack_loader import load_stack_yaml, detect_kind
 
 
@@ -8,7 +13,7 @@ STACK_PRESETS_DIR = PRESETS_ROOT / "stack"
 APP_PRESETS_DIR = PRESETS_ROOT / "app"
 
 
-def _load_named_preset(base_dir: Path, name: str) -> dict:
+def _load_named_preset(base_dir: Path, name: str, expected_kind: str) -> dict:
     path = base_dir / f"{name}.yaml"
 
     if not path.exists():
@@ -16,30 +21,22 @@ def _load_named_preset(base_dir: Path, name: str) -> dict:
 
     doc = load_stack_yaml(path)
 
-    if not isinstance(doc, dict):
-        raise RuntimeError(f"Preset file must parse to a mapping: {path}")
+    try:
+        doc = validate_and_normalize_document(doc, expected_kind)
+    except ValidationError as e:
+        raise RuntimeError(
+            f"Invalid {expected_kind} document in {path}: {e}"
+        ) from e
 
     return doc
 
 
-def load_stack_preset(name: str) -> dict:
-    doc = _load_named_preset(STACK_PRESETS_DIR, name)
-
-    kind = detect_kind(doc)
-    if kind not in {"stack", "stack-legacy"}:
-        raise RuntimeError(f"Preset '{name}' is not a stack preset")
-
-    return doc
+def load_stack_preset(name: str, presets_root: Path = STACK_PRESETS_DIR) -> dict:
+    return _load_named_preset(presets_root, name, "stack")
 
 
-def load_app_preset(name: str) -> dict:
-    doc = _load_named_preset(APP_PRESETS_DIR, name)
-
-    kind = detect_kind(doc)
-    if kind != "app":
-        raise RuntimeError(f"Preset '{name}' is not an app preset")
-
-    return doc
+def load_app_preset(name: str, presets_root: Path = APP_PRESETS_DIR) -> dict:
+    return _load_named_preset(presets_root, name, "app")
 
 
 def _merge_unique_lists(*lists):
@@ -55,98 +52,87 @@ def _merge_unique_lists(*lists):
     return result
 
 
-def resolve_project_document(project_doc: dict) -> dict:
-    """
-    Resolve a project document into an effective stack-like document.
+def _deep_merge(base: dict, override: dict) -> dict:
+    result = deepcopy(base)
 
-    Input:
-        kind: project
-        name: MyApp
-        uses:
-          stack: web-stack
-          app: finance-dashboard
-        overrides:
-          postgres:
-            db: finance_app
+    for key, value in (override or {}).items():
+        if (
+            key in result
+            and isinstance(result[key], dict)
+            and isinstance(value, dict)
+        ):
+            result[key] = _deep_merge(result[key], value)
+        else:
+            result[key] = deepcopy(value)
 
-    Output:
-        {
-            "kind": "resolved-project",
-            "name": "MyApp",
-            "plugins": [...],
-            "stack": {...},
-            "app": {...},
-            "overrides": {...},
-        }
-    """
-    if detect_kind(project_doc) != "project":
-        raise RuntimeError("resolve_project_document() requires a kind: project document")
+    return result
 
-    name = project_doc.get("name") or "MyApp"
 
-    uses = project_doc.get("uses", {})
-    if not isinstance(uses, dict):
-        raise RuntimeError("'uses' must be a mapping in a project document")
+def _build_effective_values(stack_doc: dict, app_doc: dict, project_doc: dict) -> dict:
+    stack_defaults = stack_doc.get("defaults", {})
+    app_defaults = app_doc.get("defaults", {})
+    project_overrides = project_doc.get("overrides", {})
 
-    stack_name = uses.get("stack")
-    app_name = uses.get("app")
+    values = _deep_merge(stack_defaults, app_defaults)
+    values = _deep_merge(values, project_overrides)
+    return values
 
-    if not stack_name:
-        raise RuntimeError("Project document must declare uses.stack")
 
-    if not app_name:
-        raise RuntimeError("Project document must declare uses.app")
+def resolve_project_document(project_doc: dict, base_dir: Path | str = ".") -> dict:
+    base_dir = Path(base_dir)
+    stack_presets_dir = base_dir / "presets" / "stack"
+    app_presets_dir = base_dir / "presets" / "app"
 
-    stack_doc = load_stack_preset(stack_name)
-    app_doc = load_app_preset(app_name)
+    try:
+        project_doc = validate_and_normalize_document(project_doc, "project")
+    except ValidationError as e:
+        raise RuntimeError(f"Invalid project document: {e}") from e
+
+    stack_name = project_doc["uses"]["stack"]
+    app_name = project_doc["uses"]["app"]
+
+    stack_doc = load_stack_preset(stack_name, stack_presets_dir)
+    app_doc = load_app_preset(app_name, app_presets_dir)
 
     stack_plugins = stack_doc.get("plugins", [])
     app_plugins = app_doc.get("plugins", [])
 
-    if not isinstance(stack_plugins, list):
-        raise RuntimeError(f"Stack preset '{stack_name}' has invalid plugins list")
-
-    if not isinstance(app_plugins, list):
-        raise RuntimeError(f"App preset '{app_name}' has invalid plugins list")
-
     plugins = _merge_unique_lists(stack_plugins, app_plugins)
+    values = _build_effective_values(stack_doc, app_doc, project_doc)
 
-    overrides = project_doc.get("overrides", {})
-    if overrides is None:
-        overrides = {}
-
-    if not isinstance(overrides, dict):
-        raise RuntimeError("'overrides' must be a mapping")
-
-    return {
+    resolved = {
         "kind": "resolved-project",
-        "name": name,
+        "name": project_doc["name"],
         "plugins": plugins,
         "stack": stack_doc,
         "app": app_doc,
-        "overrides": overrides,
+        "project": project_doc,
+        "values": values,
     }
+
+    try:
+        return validate_and_normalize_document(resolved, "resolved-project")
+    except ValidationError as e:
+        raise RuntimeError(
+            f"Internal error: invalid resolved-project for '{project_doc['name']}': {e}"
+        ) from e
 
 
 def resolve_document(doc: dict) -> dict:
-    """
-    Resolve any supported document into an effective planning document.
-
-    Current behavior:
-    - stack-legacy => use directly
-    - stack        => use directly
-    - app          => not directly plannable
-    - project      => resolve stack + app + overrides
-    """
     kind = detect_kind(doc)
 
     if kind in {"stack", "stack-legacy"}:
-        return doc
+        try:
+            return validate_and_normalize_document(doc, kind)
+        except ValidationError as e:
+            raise RuntimeError(f"Invalid {kind} document: {e}") from e
 
     if kind == "project":
         return resolve_project_document(doc)
 
     if kind == "app":
-        raise RuntimeError("App presets are not directly plannable; create or apply a project instead")
+        raise RuntimeError(
+            "App presets are not directly plannable; create or apply a project instead"
+        )
 
     raise RuntimeError(f"Unsupported document kind: {kind}")
