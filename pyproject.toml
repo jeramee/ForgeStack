@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-devmake = "forgestack.cli.main:main"
+devmake = "forgestack.cli.main:run_cli"
 
 [tool.setuptools]
 packages = ["forgestack"]

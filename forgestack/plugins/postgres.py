@@ -7,7 +7,11 @@ class PostgresPlugin(Plugin):
         super().__init__("postgres")
 
     def plan(self, ctx):
+
         ctx.plan.create_file(
             "docker/postgres.yml",
             template="postgres_docker"
         )
+
+
+plugin = PostgresPlugin()

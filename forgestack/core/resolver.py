@@ -1,9 +1,11 @@
-from .graph import DependencyGraph
+from .graph import DependencyGraph, GraphNode
+
 
 def build_dependency_graph(stack_plugins, registry):
 
     resolved = set()
     edges = {}
+    nodes = {}
 
     def visit(name):
 
@@ -12,7 +14,9 @@ def build_dependency_graph(stack_plugins, registry):
 
         plugin = registry.get(name)
 
-        deps = plugin.requires
+        deps = list(getattr(plugin, "requires", []))
+
+        nodes[name] = GraphNode(name=name, requires=deps)
         edges[name] = set(deps)
 
         for dep in deps:
@@ -23,6 +27,6 @@ def build_dependency_graph(stack_plugins, registry):
     for name in stack_plugins:
         visit(name)
 
-    graph = DependencyGraph(edges, set(stack_plugins), resolved)
+    graph = DependencyGraph(nodes=nodes, edges=edges)
 
     return graph

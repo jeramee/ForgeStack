@@ -97,7 +97,21 @@ class RegistryManager:
             except Exception:
                 continue
 
+    def auto_discover(self):
+        """
+        Discover plugins inside forgestack.plugins
+        """
 
+        package = importlib.import_module("forgestack.plugins")
+
+        for _, module_name, _ in pkgutil.iter_modules(package.__path__):
+
+            module = importlib.import_module(
+                f"forgestack.plugins.{module_name}"
+            )
+
+            if hasattr(module, "plugin"):
+                self.register(module.plugin)
 # Backward-compatible alias for older code
 PluginRegistry = RegistryManager
 
@@ -112,3 +126,4 @@ def list_available_plugins() -> list[str]:
     registry = RegistryManager()
     registry.discover()
     return registry.list()
+

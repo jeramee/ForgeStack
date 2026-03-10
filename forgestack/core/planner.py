@@ -1,5 +1,6 @@
-from .resolver import build_dependency_graph
 import threading
+from .resolver import build_dependency_graph
+from .dag_executor import execute_dag
 
 
 class Plan:
@@ -12,16 +13,19 @@ class Plan:
         with self._lock:
             self.actions.append(action)
 
+    def create_file(self, path, template=None, content=None):
+        self.add({
+            "type": "create_file",
+            "path": path,
+            "template": template,
+            "content": content,
+        })
+
+
 class PluginContext:
+
     def __init__(self, plan):
         self.plan = plan
-
-
-from .resolver import build_dependency_graph
-from .dag_executor import execute_dag
-
-from .resolver import build_dependency_graph
-from .dag_executor import execute_dag
 
 
 def create_plan(stack_plugins, registry):

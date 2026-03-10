@@ -1,23 +1,17 @@
 from forgestack.core.plugin_api import Plugin
-from forgestack.core.context import PluginContext
 
 
 class FastAPIPlugin(Plugin):
 
     def __init__(self):
-        super().__init__("fastapi", ["python"])
+        super().__init__("fastapi", requires=["python"])
 
-    def plan(self, ctx: PluginContext):
+    def plan(self, ctx):
 
-        ctx.append_file(
+        ctx.plan.create_file(
             "backend/main.py",
-            """
-from fastapi import FastAPI
-
-app = FastAPI()
-
-@app.get("/")
-def root():
-    return {"status": "ok"}
-"""
+            template="fastapi_main"
         )
+
+
+plugin = FastAPIPlugin()

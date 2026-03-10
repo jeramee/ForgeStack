@@ -3,6 +3,7 @@ import argparse
 from forgestack.core.registry import PluginRegistry
 from forgestack.core.planner import create_plan
 from forgestack.core.stack_loader import load_stack_yaml
+from forgestack.core.plan_executor import execute_plan
 
 
 def cmd_plan(args):
@@ -15,7 +16,7 @@ def cmd_plan(args):
     graph, plan = create_plan(stack_plugins, registry)
 
     print("\nRequested:", stack_plugins)
-    print("Resolved:", sorted(graph.resolved))
+    print("Resolved:", sorted(graph.nodes.keys()))
 
     print("\nExecution Plan:")
 
@@ -37,6 +38,17 @@ def cmd_graph(args):
     for node, deps in graph.edges.items():
         print(node, "->", list(deps))
 
+def cmd_apply(args):
+
+    stack_plugins = load_stack(args.stack)
+
+    registry = build_registry()
+
+    graph, plan = create_plan(stack_plugins, registry)
+
+    print("\nApplying ForgeStack Plan\n")
+
+    execute_plan(plan)
 
 def main():
 
@@ -59,3 +71,6 @@ def main():
         return
 
     args.func(args)
+
+def run_cli():
+    return main() 

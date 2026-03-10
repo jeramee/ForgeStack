@@ -9,7 +9,7 @@ def execute_dag(graph, registry, ctx_factory, max_workers=4):
     """
 
     completed = set()
-    remaining = set(graph.resolved)
+    remaining = set(graph.nodes.keys())
     execution_order = []
 
     while remaining:
