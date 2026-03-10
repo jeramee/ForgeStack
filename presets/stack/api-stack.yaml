@@ -1,0 +1,28 @@
+schema: forgestack.stack/v1
+kind: stack
+name: api-stack
+summary: Minimal backend API stack with persistence and cache or queue support.
+
+plugins:
+  - fastapi
+  - postgres
+  - redis
+
+services:
+  profile: api
+
+capabilities:
+  - backend:api
+  - database:sql
+  - queue:redis
+
+defaults:
+  fastapi:
+    port: 8000
+  postgres:
+    port: 5432
+    user: postgres
+    password: postgres
+    db: app
+  redis:
+    port: 6379

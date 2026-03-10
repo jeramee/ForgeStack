@@ -1,23 +1,114 @@
+from pathlib import Path
 import yaml
 
 
 def load_stack_yaml(path):
     """
-    Load stack.yaml and return plugin list.
+    Load and return the full parsed YAML document.
 
-    Example stack.yaml:
+    Supported current formats:
 
-    plugins:
-      - fastapi
-      - postgres
+    Old format:
+        project:
+          name: MyApp
+        plugins:
+          - react
+          - fastapi
+          - postgres
+
+    New format:
+        kind: project
+        name: MyApp
+        uses:
+          stack: web-stack
+          app: finance-dashboard
+        overrides:
+          postgres:
+            db: finance_app
     """
+    path = Path(path)
 
-    with open(path, "r") as f:
-        data = yaml.safe_load(f)
+    if not path.exists():
+        raise FileNotFoundError(f"Stack file not found: {path}")
 
-    plugins = data.get("plugins", [])
+    with path.open("r", encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+
+    if not isinstance(data, dict):
+        raise RuntimeError("YAML document must parse to a mapping/object at the root")
+
+    return data
+
+
+def detect_kind(doc):
+    """
+    Detect document kind.
+
+    Explicit kinds:
+    - stack
+    - app
+    - project
+
+    Backward-compatible fallback:
+    - stack-legacy if plugins are present and no kind is declared
+    """
+    kind = doc.get("kind")
+    if kind:
+        return kind
+
+    if "plugins" in doc:
+        return "stack-legacy"
+
+    return "unknown"
+
+
+def resolve_project_name(doc):
+    """
+    Resolve the project name from either the new or old format.
+
+    New format:
+        kind: project
+        name: MyApp
+
+    Old format:
+        project:
+          name: MyApp
+    """
+    kind = detect_kind(doc)
+
+    if kind == "project":
+        name = doc.get("name")
+        if name:
+            return name
+
+    project = doc.get("project", {})
+    if isinstance(project, dict):
+        name = project.get("name")
+        if name:
+            return name
+
+    name = doc.get("name")
+    if name:
+        return name
+
+    return "MyApp"
+
+
+def get_plugin_names(doc):
+    """
+    Return plugin names from a document.
+
+    Current behavior:
+    - stack-legacy documents read plugins directly
+    - stack documents read plugins directly
+    - resolved project documents may also expose plugins directly
+
+    Future:
+    - kind: project should usually resolve plugins through preset resolution
+    """
+    plugins = doc.get("plugins", [])
 
     if not isinstance(plugins, list):
-        raise ValueError("stack.yaml 'plugins' must be a list")
+        raise RuntimeError("'plugins' must be a list when present")
 
     return plugins

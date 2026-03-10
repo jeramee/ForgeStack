@@ -1,0 +1,30 @@
+schema: forgestack.app/v1
+kind: app
+name: ai-dashboard
+summary: AI-oriented operations dashboard preset for model workflows, task queues, observability, and experiment review.
+
+stack: ml-stack
+
+archetype:
+  category: dashboard
+  domain: ai
+  audience:
+    - ai-engineers
+    - operators
+    - product-teams
+
+features:
+  - charts
+  - task-monitoring
+  - experiment-review
+  - model-monitoring
+  - admin
+  - auth
+
+ui:
+  layout: dashboard
+  navigation: sidebar
+  density: medium
+
+defaults:
+  project_name: ai-dashboard

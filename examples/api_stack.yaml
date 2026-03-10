@@ -1,5 +1,0 @@
-name: api-stack
-plugins:
-  - fastapi
-  - postgres
-  - redis

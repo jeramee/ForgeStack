@@ -1,0 +1,27 @@
+schema: forgestack.app/v1
+kind: app
+name: simple-dashboard
+summary: Minimal dashboard preset for lightweight internal tools, metrics pages, and basic CRUD-style views.
+
+stack: web-stack
+
+archetype:
+  category: dashboard
+  domain: general
+  audience:
+    - internal-users
+    - operators
+
+features:
+  - charts
+  - tables
+  - filters
+  - auth
+
+ui:
+  layout: dashboard
+  navigation: topbar
+  density: low
+
+defaults:
+  project_name: simple-dashboard

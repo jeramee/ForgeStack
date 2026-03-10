@@ -1,7 +1,0 @@
-name: ml-stack
-plugins:
-  - fastapi
-  - postgres
-  - redis
-  - celery
-  - ml-workspace

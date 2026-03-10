@@ -1,0 +1,30 @@
+schema: forgestack.app/v1
+kind: app
+name: finance-dashboard
+summary: Dashboard-oriented finance application preset for reporting, metrics, and operational oversight.
+
+stack: web-stack
+
+archetype:
+  category: dashboard
+  domain: finance
+  audience:
+    - analysts
+    - operators
+    - managers
+
+features:
+  - charts
+  - kpis
+  - reporting
+  - filters
+  - admin
+  - auth
+
+ui:
+  layout: dashboard
+  navigation: sidebar
+  density: medium
+
+defaults:
+  project_name: finance-dashboard

@@ -1,0 +1,36 @@
+schema: forgestack.stack/v1
+kind: stack
+name: web-stack
+summary: Full web application stack with frontend, API, database, cache, and workers.
+
+plugins:
+  - react
+  - fastapi
+  - postgres
+  - redis
+  - celery
+
+services:
+  profile: web
+
+capabilities:
+  - frontend:webapp
+  - backend:api
+  - database:sql
+  - queue:redis
+  - worker:celery
+
+defaults:
+  react:
+    port: 5173
+  fastapi:
+    port: 8000
+  postgres:
+    port: 5432
+    user: postgres
+    password: postgres
+    db: app
+  redis:
+    port: 6379
+  celery:
+    workers: 1

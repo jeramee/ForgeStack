@@ -1,0 +1,10 @@
+kind: project
+name: MyApp
+
+uses:
+  stack: web-stack
+  app: finance-dashboard
+
+overrides:
+  postgres:
+    db: finance_app

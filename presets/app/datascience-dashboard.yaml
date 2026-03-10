@@ -1,0 +1,30 @@
+schema: forgestack.app/v1
+kind: app
+name: datascience-dashboard
+summary: Data science workbench and dashboard preset for experimentation, metrics, model monitoring, and analysis.
+
+stack: ml-stack
+
+archetype:
+  category: dashboard
+  domain: data-science
+  audience:
+    - data-scientists
+    - ml-engineers
+    - analysts
+
+features:
+  - notebooks
+  - model-monitoring
+  - experiment-tracking
+  - charts
+  - admin
+  - auth
+
+ui:
+  layout: dashboard
+  navigation: workspace
+  density: high
+
+defaults:
+  project_name: datascience-dashboard
