@@ -1,0 +1,7 @@
+export const FEATURES = {
+  charts: {{ "true" if has_feature.charts else "false" }},
+  auth: {{ "true" if has_feature.auth else "false" }},
+  reporting: {{ "true" if has_feature.reporting else "false" }},
+  filters: {{ "true" if has_feature.filters else "false" }},
+  admin: {{ "true" if has_feature.admin else "false" }}
+};

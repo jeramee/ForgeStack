@@ -33,6 +33,8 @@ def _run_safely(fn):
 
 def _build_render_context(raw_doc, effective_doc):
     plugins = get_plugin_names(effective_doc)
+    app_doc = effective_doc.get("app", {})
+    features = app_doc.get("features", {}) if isinstance(app_doc, dict) else {}
 
     return {
         "raw": raw_doc,
@@ -40,10 +42,12 @@ def _build_render_context(raw_doc, effective_doc):
         "project": effective_doc.get("project", raw_doc),
         "project_name": resolve_project_name(effective_doc),
         "stack": effective_doc.get("stack", {}),
-        "app": effective_doc.get("app", {}),
+        "app": app_doc,
         "values": effective_doc.get("values", {}),
         "plugins": plugins,
         "has_plugin": {name: True for name in plugins},
+        "features": features,
+        "has_feature": {name: bool(enabled) for name, enabled in features.items()},
     }
 
 
