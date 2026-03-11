@@ -10,7 +10,11 @@ class FastAPIPlugin(Plugin):
 
         ctx.plan.create_file(
             "backend/main.py",
-            template="fastapi_main"
+            template="fastapi/main.py"
+        )
+        ctx.plan.create_file(
+            "backend/app_config.py",
+            template="fastapi/app_config.py"
         )
 
 

@@ -10,7 +10,23 @@ class ReactPlugin(Plugin):
 
         ctx.plan.create_file(
             "frontend/package.json",
-            template="react_package"
+            template="react/package.json"
+        )
+        ctx.plan.create_file(
+            "frontend/index.html",
+            template="react/index.html"
+        )
+        ctx.plan.create_file(
+            "frontend/src/main.jsx",
+            template="react/src/main.jsx"
+        )
+        ctx.plan.create_file(
+            "frontend/src/App.jsx",
+            template="react/src/App.jsx"
+        )
+        ctx.plan.create_file(
+            "frontend/Dockerfile",
+            template="react/Dockerfile"
         )
 
 

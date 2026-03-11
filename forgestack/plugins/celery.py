@@ -1,4 +1,5 @@
 from forgestack.core.plugin_api import Plugin
+from forgestack.core.plugin_api import Plugin
 
 
 class CeleryPlugin(Plugin):
@@ -9,15 +10,15 @@ class CeleryPlugin(Plugin):
     def plan(self, ctx):
         ctx.plan.create_file(
             "backend/celery_app.py",
-            template="celery_app"
+            template="celery/app.py"
         )
         ctx.plan.create_file(
             "backend/tasks.py",
-            template="celery_tasks"
+            template="celery/tasks.py"
         )
         ctx.plan.create_file(
             "docker/celery.yml",
-            template="celery_docker"
+            template="docker/celery.yml"
         )
 
 

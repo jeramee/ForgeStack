@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+{% if has_plugin.celery %}celery
+{% endif %}{% if has_plugin.redis %}redis
+{% endif %}

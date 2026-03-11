@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: {{ values.get('postgres', {}).get('user', 'postgres') }}
+      POSTGRES_PASSWORD: {{ values.get('postgres', {}).get('password', 'postgres') }}
+      POSTGRES_DB: {{ values.get('postgres', {}).get('db', 'app_db') }}
+    ports:
+      - "{{ values.get('postgres', {}).get('port', 5432) }}:5432"

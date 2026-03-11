@@ -1,0 +1,6 @@
+services:
+  celery:
+    build: ../backend
+    command: celery -A celery_app worker --loglevel=info
+    depends_on:
+      - redis

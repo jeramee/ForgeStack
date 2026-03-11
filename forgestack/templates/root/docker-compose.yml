@@ -1,0 +1,43 @@
+services:
+  frontend:
+    build: ./frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+
+  backend:
+    build: ./backend
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: {{ values.get('postgres', {}).get('user', 'postgres') }}
+      POSTGRES_PASSWORD: {{ values.get('postgres', {}).get('password', 'postgres') }}
+      POSTGRES_DB: {{ values.get('postgres', {}).get('db', 'app_db') }}
+    ports:
+      - "{{ values.get('postgres', {}).get('port', 5432) }}:5432"
+
+  redis:
+    image: redis:7
+    ports:
+      - "{{ values.get('redis', {}).get('port', 6379) }}:6379"
+
+  celery:
+    build: ./backend
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    command: celery -A celery_app worker --loglevel=info
+    depends_on:
+      - redis

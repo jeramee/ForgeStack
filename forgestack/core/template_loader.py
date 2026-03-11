@@ -8,6 +8,7 @@ TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "templates"
 TEMPLATE_ALIASES = {
     "react_package": "react/package.json",
     "python_requirements": "python/requirements.txt",
+    "root_docker_compose": "root/docker-compose.yml",
     "postgres_docker": "docker/postgres.yml",
     "redis_docker": "docker/redis.yml",
     "celery_app": "celery/app.py",

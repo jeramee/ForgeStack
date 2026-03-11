@@ -10,7 +10,7 @@ class PostgresPlugin(Plugin):
 
         ctx.plan.create_file(
             "docker/postgres.yml",
-            template="postgres_docker"
+            template="docker/postgres.yml"
         )
 
 
