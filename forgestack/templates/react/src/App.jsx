@@ -1,5 +1,5 @@
 {% raw %}
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 const API_BASE = "http://localhost:8000";
 
@@ -13,6 +13,10 @@ export default function App() {
   const [taskResult, setTaskResult] = useState(null);
   const [taskError, setTaskError] = useState("");
   const [isPolling, setIsPolling] = useState(false);
+
+  const [items, setItems] = useState([]);
+  const [itemsLoading, setItemsLoading] = useState(false);
+  const [itemsError, setItemsError] = useState("");
 
   useEffect(() => {
     async function loadConfig() {
@@ -36,6 +40,54 @@ export default function App() {
 
     loadConfig();
   }, []);
+
+  const featureEntries = config?.features ? Object.entries(config.features) : [];
+  const isTechnicianConsole =
+    config?.app_name === "technician-console" || Boolean(config?.features?.technician_console);
+  const hasSQLite = Boolean(config?.sqlite?.enabled);
+
+  async function loadItems() {
+    try {
+      setItemsLoading(true);
+      setItemsError("");
+
+      const response = await fetch(`${API_BASE}/items`);
+      if (!response.ok) {
+        throw new Error(`Items request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setItems(Array.isArray(data) ? data : []);
+    } catch (error) {
+      setItemsError(error.message || "Failed to load items");
+    } finally {
+      setItemsLoading(false);
+    }
+  }
+
+  async function seedItem() {
+    try {
+      setItemsError("");
+
+      const response = await fetch(`${API_BASE}/items/seed`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Seed request failed: ${response.status}`);
+      }
+
+      await loadItems();
+    } catch (error) {
+      setItemsError(error.message || "Failed to seed item");
+    }
+  }
+
+  useEffect(() => {
+    if (hasSQLite) {
+      loadItems();
+    }
+  }, [hasSQLite]);
 
   async function runPingTask() {
     try {
@@ -105,14 +157,38 @@ export default function App() {
     };
   }, [taskId, isPolling]);
 
-  const featureEntries = config?.features ? Object.entries(config.features) : [];
+  const cardStyle = {
+    border: "1px solid #d1d5db",
+    borderRadius: "12px",
+    padding: "1rem",
+    background: "#ffffff",
+    marginBottom: "1rem",
+  };
+
+  const compactButtonStyle = {
+    padding: "0.75rem 1rem",
+    borderRadius: "10px",
+    border: "1px solid #cbd5e1",
+    background: "#f8fafc",
+    cursor: "pointer",
+    fontWeight: 600,
+  };
+
+  const layoutStyle = {
+    maxWidth: "900px",
+    margin: "0 auto",
+    padding: "1rem",
+    fontFamily: "Arial, sans-serif",
+  };
+
+  const itemCountLabel = useMemo(() => `${items.length} item${items.length === 1 ? "" : "s"}`, [items.length]);
 
   return (
-    <div>
-      <h1>ForgeStack Generated App</h1>
+    <div style={layoutStyle}>
+      <h1>{isTechnicianConsole ? "Technician Console" : "ForgeStack Generated App"}</h1>
 
-      <section style={{ marginBottom: "2rem" }}>
-        <h2>Configuration</h2>
+      <section style={{ ...cardStyle }}>
+        <h2 style={{ marginTop: 0 }}>Configuration</h2>
 
         {loadingConfig && <p>Loading config...</p>}
         {configError && <p>{configError}</p>}
@@ -128,7 +204,7 @@ export default function App() {
               {featureEntries.length === 0 ? (
                 <p>None</p>
               ) : (
-                <ul>
+                <ul style={{ paddingLeft: "1.25rem" }}>
                   {featureEntries.map(([name, enabled]) => (
                     <li key={name}>
                       {name}: {String(enabled)}
@@ -141,23 +217,78 @@ export default function App() {
         )}
       </section>
 
-      <section>
-        <h2>Async Task Demo</h2>
-        <button onClick={runPingTask}>Run Ping Task</button>
+      {hasSQLite && (
+        <>
+          <section style={{ ...cardStyle }}>
+            <h2 style={{ marginTop: 0 }}>{isTechnicianConsole ? "Queue Summary" : "Items"}</h2>
+            <p><strong>Total:</strong> {itemCountLabel}</p>
+            <p><strong>Database:</strong> {config?.sqlite?.database || "app.db"}</p>
+          </section>
 
-        {taskId && <p><strong>Task ID:</strong> {taskId}</p>}
-        {taskState && <p><strong>Task State:</strong> {taskState}</p>}
-        {isPolling && <p>Polling for completion...</p>}
+          <section style={{ ...cardStyle }}>
+            <h2 style={{ marginTop: 0 }}>Quick Actions</h2>
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+              <button style={compactButtonStyle} onClick={loadItems}>Refresh Items</button>
+              <button style={compactButtonStyle} onClick={seedItem}>Seed Sample Item</button>
+            </div>
+            {itemsError && <p style={{ marginTop: "1rem" }}>{itemsError}</p>}
+          </section>
 
-        {taskResult && (
-          <div>
-            <strong>Task Result:</strong>
-            <pre>{JSON.stringify(taskResult, null, 2)}</pre>
-          </div>
-        )}
+          <section style={{ ...cardStyle }}>
+            <h2 style={{ marginTop: 0 }}>{isTechnicianConsole ? "Work Items" : "Items List"}</h2>
 
-        {taskError && <p>{taskError}</p>}
-      </section>
+            {itemsLoading && <p>Loading items...</p>}
+
+            {!itemsLoading && items.length === 0 && (
+              <p>No items available yet.</p>
+            )}
+
+            {!itemsLoading && items.length > 0 && (
+              <div>
+                {items.map((item) => (
+                  <div
+                    key={item.id}
+                    style={{
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "10px",
+                      padding: "0.85rem",
+                      marginBottom: "0.75rem",
+                      background: "#f8fafc",
+                    }}
+                  >
+                    <p style={{ margin: "0 0 0.35rem 0" }}>
+                      <strong>ID:</strong> {item.id}
+                    </p>
+                    <p style={{ margin: 0 }}>
+                      <strong>Name:</strong> {item.name}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        </>
+      )}
+
+      {config?.features?.auth && (
+        <section style={{ ...cardStyle }}>
+          <h2 style={{ marginTop: 0 }}>Async Task Demo</h2>
+          <button style={compactButtonStyle} onClick={runPingTask}>Run Ping Task</button>
+
+          {taskId && <p><strong>Task ID:</strong> {taskId}</p>}
+          {taskState && <p><strong>Task State:</strong> {taskState}</p>}
+          {isPolling && <p>Polling for completion...</p>}
+
+          {taskResult && (
+            <div>
+              <strong>Task Result:</strong>
+              <pre>{JSON.stringify(taskResult, null, 2)}</pre>
+            </div>
+          )}
+
+          {taskError && <p>{taskError}</p>}
+        </section>
+      )}
     </div>
   );
 }

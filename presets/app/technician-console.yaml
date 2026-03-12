@@ -1,0 +1,10 @@
+name: technician-console
+kind: app
+summary: Mobile-responsive technician workflow console for browser-based operational use.
+stack: local-workflow-stack
+features:
+  technician_console: true
+  queue: true
+  intake: true
+  review: true
+  quick_actions: true

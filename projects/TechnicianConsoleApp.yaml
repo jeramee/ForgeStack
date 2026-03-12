@@ -1,0 +1,8 @@
+kind: project
+name: TechnicianConsoleApp
+uses:
+  stack: local-workflow-stack
+  app: technician-console
+overrides:
+  sqlite:
+    database: app.db
