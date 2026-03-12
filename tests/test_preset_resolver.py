@@ -120,3 +120,53 @@ def test_missing_app_preset_fails(tmp_path):
 
     with pytest.raises(FileNotFoundError):
         resolve_project_document(project_doc, base_dir=tmp_path)
+
+def test_local_workflow_project_resolves_sqlite_stack_and_app(tmp_path):
+    _write_yaml(
+        tmp_path / "presets" / "stack" / "local-workflow-stack.yaml",
+        {
+            "kind": "stack",
+            "name": "local-workflow-stack",
+            "plugins": ["react", "fastapi", "sqlite"],
+            "defaults": {},
+        },
+    )
+
+    _write_yaml(
+        tmp_path / "presets" / "app" / "local-workflow-console.yaml",
+        {
+            "kind": "app",
+            "name": "local-workflow-console",
+            "stack": "local-workflow-stack",
+            "features": {
+                "queue": True,
+                "intake": True,
+                "review": True,
+            },
+            "defaults": {},
+            "ui": {},
+        },
+    )
+
+    project_doc = {
+        "kind": "project",
+        "name": "LocalWorkflowApp",
+        "uses": {
+            "stack": "local-workflow-stack",
+            "app": "local-workflow-console",
+        },
+        "overrides": {
+            "sqlite": {
+                "database": "app.db",
+            }
+        },
+    }
+
+    resolved = resolve_project_document(project_doc, base_dir=tmp_path)
+
+    assert resolved["kind"] == "resolved-project"
+    assert resolved["name"] == "LocalWorkflowApp"
+    assert resolved["plugins"] == ["react", "fastapi", "sqlite"]
+    assert resolved["stack"]["name"] == "local-workflow-stack"
+    assert resolved["app"]["name"] == "local-workflow-console"
+    assert resolved["values"]["sqlite"]["database"] == "app.db"

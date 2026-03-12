@@ -15,10 +15,17 @@ services:
       - ./backend:/app
     ports:
       - "8000:8000"
+{% if has_plugin.get("postgres") or has_plugin.get("redis") %}
     depends_on:
+{% if has_plugin.get("postgres") %}
       - postgres
+{% endif %}
+{% if has_plugin.get("redis") %}
       - redis
+{% endif %}
+{% endif %}
 
+{% if has_plugin.get("postgres") %}
   postgres:
     image: postgres:15
     environment:
@@ -27,17 +34,24 @@ services:
       POSTGRES_DB: {{ values.get('postgres', {}).get('db', 'app_db') }}
     ports:
       - "{{ values.get('postgres', {}).get('port', 5432) }}:5432"
+{% endif %}
 
+{% if has_plugin.get("redis") %}
   redis:
     image: redis:7
     ports:
       - "{{ values.get('redis', {}).get('port', 6379) }}:6379"
+{% endif %}
 
+{% if has_plugin.get("celery") %}
   celery:
     build: ./backend
     working_dir: /app
     volumes:
       - ./backend:/app
     command: celery -A celery_app worker --loglevel=info
+{% if has_plugin.get("redis") %}
     depends_on:
       - redis
+{% endif %}
+{% endif %}

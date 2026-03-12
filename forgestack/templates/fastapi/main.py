@@ -1,10 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+{% if has_plugin.get("celery") %}
 from celery.result import AsyncResult
+{% endif %}
 
 from app_config import APP_CONFIG
+{% if has_plugin.get("celery") %}
 from celery_app import celery_app
 from tasks import ping
+{% endif %}
+{% if has_plugin.get("sqlite") %}
+from db import get_connection, init_db
+{% endif %}
 
 app = FastAPI(title="{{ project_name }}")
 
@@ -15,6 +22,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+{% if has_plugin.get("sqlite") %}
+@app.on_event("startup")
+def startup_init_db():
+    init_db()
+{% endif %}
 
 
 @app.get("/")
@@ -36,6 +49,7 @@ def config():
     return APP_CONFIG
 
 
+{% if has_plugin.get("celery") %}
 @app.post("/tasks/ping")
 def run_ping_task():
     task = ping.delay()
@@ -63,3 +77,27 @@ def get_task_status(task_id: str):
             payload["error"] = str(task.result)
 
     return payload
+{% endif %}
+
+
+{% if has_plugin.get("sqlite") %}
+@app.get("/items")
+def list_items():
+    conn = get_connection()
+    try:
+        rows = conn.execute("SELECT id, name FROM items ORDER BY id").fetchall()
+        return [dict(row) for row in rows]
+    finally:
+        conn.close()
+
+
+@app.post("/items/seed")
+def seed_item():
+    conn = get_connection()
+    try:
+        conn.execute("INSERT INTO items (name) VALUES (?)", ("sample item",))
+        conn.commit()
+        return {"status": "ok"}
+    finally:
+        conn.close()
+{% endif %}

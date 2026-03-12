@@ -1,0 +1,8 @@
+kind: project
+name: LocalWorkflowApp
+uses:
+  stack: local-workflow-stack
+  app: local-workflow-console
+overrides:
+  sqlite:
+    database: app.db

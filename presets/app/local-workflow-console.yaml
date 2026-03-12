@@ -1,0 +1,8 @@
+name: local-workflow-console
+kind: app
+summary: Local workflow-oriented application preset with lightweight persistence.
+stack: local-workflow-stack
+features:
+  queue: true
+  intake: true
+  review: true

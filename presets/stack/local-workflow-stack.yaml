@@ -1,0 +1,9 @@
+name: local-workflow-stack
+kind: stack
+summary: Local workflow stack with FastAPI, React, and SQLite.
+plugins:
+  - react
+  - fastapi
+  - sqlite
+services:
+  profile: local-workflow
