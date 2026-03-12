@@ -1,167 +1,164 @@
-import { useEffect, useMemo, useState } from "react";
+{% raw %}
+import React, { useEffect, useState } from "react";
 
-const API_BASE_URL = "http://localhost:8000";
-
-function FeatureList({ features }) {
-  if (!features.length) {
-    return <p>No app features enabled.</p>;
-  }
-
-  return (
-    <ul>
-      {features.map((feature) => (
-        <li key={feature}>{feature}</li>
-      ))}
-    </ul>
-  );
-}
+const API_BASE = "http://localhost:8000";
 
 export default function App() {
-  const [health, setHealth] = useState(null);
   const [config, setConfig] = useState(null);
+  const [configError, setConfigError] = useState("");
+  const [loadingConfig, setLoadingConfig] = useState(true);
+
+  const [taskId, setTaskId] = useState("");
+  const [taskState, setTaskState] = useState("");
   const [taskResult, setTaskResult] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [taskLoading, setTaskLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [taskError, setTaskError] = useState("");
+  const [isPolling, setIsPolling] = useState(false);
 
   useEffect(() => {
-    async function loadApplicationData() {
+    async function loadConfig() {
       try {
-        setLoading(true);
-        setError("");
+        setLoadingConfig(true);
+        setConfigError("");
 
-        const [healthResponse, configResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}/health`),
-          fetch(`${API_BASE_URL}/config`),
-        ]);
-
-        if (!healthResponse.ok) {
-          throw new Error(`Health request failed with ${healthResponse.status}`);
+        const response = await fetch(`${API_BASE}/config`);
+        if (!response.ok) {
+          throw new Error(`Config request failed: ${response.status}`);
         }
 
-        if (!configResponse.ok) {
-          throw new Error(`Config request failed with ${configResponse.status}`);
-        }
-
-        const healthData = await healthResponse.json();
-        const configData = await configResponse.json();
-
-        setHealth(healthData);
-        setConfig(configData);
-      } catch (err) {
-        setError(err.message || "Failed to load generated app data.");
+        const data = await response.json();
+        setConfig(data);
+      } catch (error) {
+        setConfigError(error.message || "Failed to load config");
       } finally {
-        setLoading(false);
+        setLoadingConfig(false);
       }
     }
 
-    loadApplicationData();
+    loadConfig();
   }, []);
 
-  async function queuePingTask() {
+  async function runPingTask() {
     try {
-      setTaskLoading(true);
-      setError("");
+      setTaskError("");
+      setTaskResult(null);
+      setTaskState("queueing");
 
-      const response = await fetch(`${API_BASE_URL}/tasks/ping`, {
+      const response = await fetch(`${API_BASE}/tasks/ping`, {
         method: "POST",
       });
 
       if (!response.ok) {
-        throw new Error(`Task request failed with ${response.status}`);
+        throw new Error(`Task request failed: ${response.status}`);
       }
 
       const data = await response.json();
-      setTaskResult(data);
-    } catch (err) {
-      setError(err.message || "Failed to queue ping task.");
-    } finally {
-      setTaskLoading(false);
+      setTaskId(data.task_id);
+      setTaskState(data.status || "queued");
+      setIsPolling(true);
+    } catch (error) {
+      setTaskError(error.message || "Failed to queue task");
+      setTaskState("failed");
+      setIsPolling(false);
     }
   }
 
-  const featureNames = useMemo(() => {
-    if (!config?.features) {
-      return [];
+  useEffect(() => {
+    if (!taskId || !isPolling) return;
+
+    let cancelled = false;
+
+    async function pollTask() {
+      try {
+        const response = await fetch(`${API_BASE}/tasks/${taskId}`);
+        if (!response.ok) {
+          throw new Error(`Task status request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (cancelled) return;
+
+        setTaskState(data.state || "");
+
+        if (data.ready) {
+          setIsPolling(false);
+
+          if (data.successful) {
+            setTaskResult(data.result ?? null);
+          } else {
+            setTaskError(data.error || "Task failed");
+          }
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setTaskError(error.message || "Polling failed");
+          setIsPolling(false);
+        }
+      }
     }
 
-    return Object.entries(config.features)
-      .filter(([, enabled]) => Boolean(enabled))
-      .map(([name]) => name);
-  }, [config]);
+    pollTask();
+    const timer = setInterval(pollTask, 1500);
 
-  const title = config?.project_name || "{{ project_name }}";
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [taskId, isPolling]);
 
-  const pageStyle = {
-    fontFamily: "Arial, sans-serif",
-    padding: "2rem",
-    maxWidth: "900px",
-    margin: "0 auto",
-  };
-
-  const cardStyle = {
-    border: "1px solid #d0d7de",
-    borderRadius: "12px",
-    padding: "1rem",
-    marginBottom: "1rem",
-  };
-
-  const codeStyle = {
-    backgroundColor: "#f6f8fa",
-    padding: "0.75rem",
-    borderRadius: "8px",
-    overflowX: "auto",
-  };
+  const featureEntries = config?.features ? Object.entries(config.features) : [];
 
   return (
-    <div style={pageStyle}>
-      <h1>{title}</h1>
-      <p>ForgeStack generated application skeleton.</p>
+    <div>
+      <h1>ForgeStack Generated App</h1>
 
-      {loading && <p>Loading backend health and config...</p>}
-      {error && <p>Error: {error}</p>}
+      <section style={{ marginBottom: "2rem" }}>
+        <h2>Configuration</h2>
 
-      <div style={cardStyle}>
-        <h2>Backend Health</h2>
-        {health ? (
-          <pre style={codeStyle}>{JSON.stringify(health, null, 2)}</pre>
-        ) : (
-          !loading && <p>No health response loaded yet.</p>
+        {loadingConfig && <p>Loading config...</p>}
+        {configError && <p>{configError}</p>}
+
+        {config && (
+          <div>
+            <p><strong>Project:</strong> {config.project_name}</p>
+            <p><strong>Stack:</strong> {config.stack_name}</p>
+            <p><strong>App:</strong> {config.app_name}</p>
+
+            <div>
+              <strong>Features:</strong>
+              {featureEntries.length === 0 ? (
+                <p>None</p>
+              ) : (
+                <ul>
+                  {featureEntries.map(([name, enabled]) => (
+                    <li key={name}>
+                      {name}: {String(enabled)}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
         )}
-      </div>
+      </section>
 
-      <div style={cardStyle}>
-        <h2>Generated Config</h2>
-        {config ? (
-          <>
-            <p>
-              <strong>Project:</strong> {config.project_name}
-            </p>
-            <p>
-              <strong>Stack:</strong> {config.stack_name}
-            </p>
-            <p>
-              <strong>App:</strong> {config.app_name}
-            </p>
-            <h3>Enabled Features</h3>
-            <FeatureList features={featureNames} />
-            <pre style={codeStyle}>{JSON.stringify(config, null, 2)}</pre>
-          </>
-        ) : (
-          !loading && <p>No config loaded yet.</p>
-        )}
-      </div>
+      <section>
+        <h2>Async Task Demo</h2>
+        <button onClick={runPingTask}>Run Ping Task</button>
 
-      <div style={cardStyle}>
-        <h2>Celery Ping Task</h2>
-        <button type="button" onClick={queuePingTask} disabled={taskLoading}>
-          {taskLoading ? "Queueing..." : "Queue ping task"}
-        </button>
+        {taskId && <p><strong>Task ID:</strong> {taskId}</p>}
+        {taskState && <p><strong>Task State:</strong> {taskState}</p>}
+        {isPolling && <p>Polling for completion...</p>}
 
         {taskResult && (
-          <pre style={codeStyle}>{JSON.stringify(taskResult, null, 2)}</pre>
+          <div>
+            <strong>Task Result:</strong>
+            <pre>{JSON.stringify(taskResult, null, 2)}</pre>
+          </div>
         )}
-      </div>
+
+        {taskError && <p>{taskError}</p>}
+      </section>
     </div>
   );
 }
+{% endraw %}

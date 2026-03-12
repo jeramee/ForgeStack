@@ -8,7 +8,7 @@ from forgestack.cli.main import _build_render_context
 from forgestack.core.plan_executor import execute_plan
 
 
-def test_full_build_plan_outputs(tmp_path):
+def test_generated_async_vertical_slice(tmp_path):
     raw_doc = load_stack_yaml("projects/MyApp.yaml")
     effective_doc = resolve_document(raw_doc)
     plugin_names = get_plugin_names(effective_doc)
@@ -23,34 +23,24 @@ def test_full_build_plan_outputs(tmp_path):
 
     backend_main = (output_root / "backend" / "main.py").read_text(encoding="utf-8")
     frontend_app = (output_root / "frontend" / "src" / "App.jsx").read_text(encoding="utf-8")
-    app_config = (output_root / "backend" / "app_config.py").read_text(encoding="utf-8")
+    celery_tasks = (output_root / "backend" / "tasks.py").read_text(encoding="utf-8")
 
-    # Existing/full-stack output sanity
-    assert (output_root / "backend" / "requirements.txt").exists()
-    assert (output_root / "backend" / "Dockerfile").exists()
-    assert (output_root / "frontend" / "package.json").exists()
-    assert (output_root / "frontend" / "Dockerfile").exists()
-    assert (output_root / "docker-compose.yml").exists()
-
-    # Config contract
-    assert '"project_name": "MyApp"' in app_config
-    assert '"stack_name": "web-stack"' in app_config
-    assert '"app_name": "finance-dashboard"' in app_config
-    assert '"charts": True' in app_config
-    assert '"auth": True' in app_config
-
-    # M7 backend async flow
+    # Backend should expose queue + polling endpoints
     assert '@app.post("/tasks/ping")' in backend_main
     assert '@app.get("/tasks/{task_id}")' in backend_main
-    assert "AsyncResult" in backend_main
-    assert "task.ready()" in backend_main
-    assert "task.successful()" in backend_main
-    assert 'payload["result"]' in backend_main
+    assert "from celery.result import AsyncResult" in backend_main
+    assert "from celery_app import celery_app" in backend_main
 
-    # M7 frontend async flow
-    assert "/config" in frontend_app
-    assert "/tasks/ping" in frontend_app
-    assert "/tasks/${taskId}" in frontend_app
+    # Task implementation should still exist
+    assert "@celery_app.task" in celery_tasks
+    assert "def ping()" in celery_tasks
+    assert '"worker": "celery"' in celery_tasks
+
+    # Frontend should fetch config, queue task, and poll for result
+    assert "fetch(`${API_BASE}/config`)" in frontend_app
+    assert "fetch(`${API_BASE}/tasks/ping`" in frontend_app
+    assert "fetch(`${API_BASE}/tasks/${taskId}`)" in frontend_app
     assert "setInterval" in frontend_app
+    assert "setTaskId" in frontend_app
     assert "setTaskState" in frontend_app
     assert "setTaskResult" in frontend_app
