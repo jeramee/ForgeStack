@@ -7,6 +7,5 @@ celery_app = Celery(
     "tasks",
     broker=f"redis://{REDIS_HOST}:{REDIS_PORT}/0",
     backend=f"redis://{REDIS_HOST}:{REDIS_PORT}/0",
+    include=["tasks"],
 )
-
-celery_app.autodiscover_tasks()
