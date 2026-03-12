@@ -1,606 +1,495 @@
+# Architecture
 
-# ForgeStack Internal Architecture Specification
+This document describes the **current implemented architecture** of ForgeStack.
 
-## Purpose
+It should be read as the main architecture document for the current project state, not as an older stack-only description and not as a broad future-only wishlist.
 
-This document defines the internal architecture of ForgeStack.  
-It is intended for core maintainers and contributors implementing or extending the ForgeStack engine.
+ForgeStack is a modular platform for generating applications and workflow systems from composable presets and plugins.
 
-ForgeStack is designed around a **small core with a large plugin ecosystem**.
-
-The core is responsible only for:
-
-- loading stack configuration
-- discovering plugins
-- resolving dependencies
-- building a dependency graph
-- generating a plan
-- executing the plan
-- reporting results
-
-All domain-specific behavior belongs in plugins.
+Its current active CLI is **`devmake`**.
 
 ---
 
-## Documentation
+## Architectural Summary
 
-- [Main README](README.md)
+ForgeStack is now centered on a declarative object model with clean separation between:
 
-### Start here
-- [Introduction](docs/introduction.md)
-- [Docs Overview](docs/README_docs_overview.md)
-- [Architecture](docs/architecture.md)
-- [Roadmap](docs/roadmap.md)
-- [Contributing](docs/contributing.md)
+- **stack** = reusable technical preset
+- **app** = reusable product or archetype preset
+- **project** = concrete instance
+- **output** = rendered filesystem result
 
-### Core platform
-- [Core Engine](docs/core-engine.md)
-- [Graph Engine](docs/graph-engine.md)
-- [Planner](docs/planner.md)
-- [Executor](docs/executor.md)
-- [Validation and State](docs/validation-and-state.md)
-- [Machine Readable Output](docs/machine-readable-output.md)
+This separation is one of the main architectural rules of the platform.
 
-### Plugin and stack model
-- [Plugin System](docs/plugin-system.md)
-- [Stack Format](docs/stack-format.md)
-- [CLI](docs/cli.md)
-
-### Strategy and design
-- [Lean Core Principles](docs/lean-core-principles.md)
-- [Product Strategy](docs/product-strategy.md)
-- [Data Science Strategy](docs/data-science-strategy.md)
-- [Hardware Strategy](docs/hardware-strategy.md)
-
-### Extended architecture notes
-- [ForgeStack Architecture Spec](docs/forgestack_architecture_spec.md)
+ForgeStack is no longer centered on one mixed configuration file that tries to act as preset, project, override object, and output definition at the same time.
 
 ---
 
-# Design Goals
+## Current Repository Model
 
-ForgeStack follows several architectural principles.
+The current recommended repository shape is:
 
-### Small Core
+```text
+presets/
+  stack/
+    api-stack.yaml
+    web-stack.yaml
+    ml-stack.yaml
 
-The core engine should remain small and stable.
+  app/
+    finance-dashboard.yaml
+    datascience-dashboard.yaml
+    simple-dashboard.yaml
+    ai-dashboard.yaml
 
-Responsibilities of the core:
+projects/
+  MyApp.yaml
 
-- configuration parsing
-- plugin discovery
-- dependency resolution
-- graph generation
-- plan generation
-- execution orchestration
+output/
+  MyApp/
 
-### Plugin Driven
-
-Plugins implement the actual behavior of the system:
-
-- framework generators
-- service integrations
-- toolchain integrations
-- template logic
-
-### Plan Before Apply
-
-All operations must support preview before execution.
-
-```
-forgestack plan
-forgestack apply
-```
-
-This improves safety and reproducibility.
-
-### Graph First
-
-ForgeStack maintains an explicit dependency graph between plugins.
-
-This allows:
-
-- ordering
-- visualization
-- diagnostics
-- future caching or parallelism
-
----
-
-# High Level Architecture
-
-```
-CLI
- ↓
-Config Loader
- ↓
-Plugin Registry
- ↓
-Dependency Resolver
- ↓
-Dependency Graph
- ↓
-Planner
- ↓
-Executor
- ↓
-State Store
- ↓
-Output Renderer
-```
-
-Each stage performs one specific function.
-
----
-
-# Repository Structure
-
-Recommended repository layout:
-
-```
 forgestack/
-
-  core/
-
-    cli/
-      main.py
-      commands/
-
-    config/
-      loader.py
-      schema.py
-      models.py
-
-    plugin_api/
-      base.py
-      context.py
-      metadata.py
-
-    registry/
-      manager.py
-      discovery.py
-
-    graph/
-      models.py
-      builder.py
-      sorter.py
-
-    planner/
-      planner.py
-      actions.py
-      plan.py
-      validators.py
-
-    executor/
-      executor.py
-      file_ops.py
-      patch_ops.py
-
-    state/
-      models.py
-      store.py
-
-    output/
-      console.py
-      json.py
-
-    utils/
-
-  plugins/
   templates/
-  examples/
-  docs/
 ```
+
+### Meaning
+
+- `presets/stack/` contains reusable technical presets
+- `presets/app/` contains reusable product presets
+- `projects/` contains concrete project definitions
+- `output/` contains generated filesystem results
+- `forgestack/templates/` contains internal render templates
+
+`forgestack/templates/` is not a user-facing preset area.
 
 ---
 
-# Core Domain Models
+## Current CLI Surface
 
-## Stack Configuration
+ForgeStack currently uses **`devmake`** as the active CLI.
 
-Stack configuration describes which plugins are active.
+The current command family is:
 
-Example configuration:
+```powershell
+devmake plugins
+devmake presets list
+devmake create project MyApp --stack web-stack --app finance-dashboard
+devmake graph projects/MyApp.yaml
+devmake plan projects/MyApp.yaml
+devmake apply projects/MyApp.yaml
+```
+
+The architecture should support this flow clearly and explicitly.
+
+---
+
+## High-Level Execution Flow
+
+The current generation path looks like this:
+
+```text
+project file
+  ↓
+load YAML
+  ↓
+resolve stack/app presets
+  ↓
+build render context
+  ↓
+discover plugins
+  ↓
+build dependency graph
+  ↓
+create execution plan
+  ↓
+apply plan into output/
+```
+
+This means ForgeStack now has a real resolution step before planning and apply.
+
+It is no longer just “read plugin names from one file and render a few templates.”
+
+---
+
+## Canonical Objects
+
+## 1. Stack
+
+A **stack** is a reusable technical preset.
+
+It defines the reusable technical shape of a generated system.
+
+A stack may include:
+
+- plugin composition
+- service profile
+- technical defaults
+- framework and service selection
+- capability defaults
+
+A stack should not own:
+
+- final project identity
+- product branding
+- instance-specific overrides
+- output folder meaning
+
+---
+
+## 2. App
+
+An **app** is a reusable product or archetype preset.
+
+It defines product-facing or workflow-facing intent.
+
+An app may include:
+
+- feature modules
+- UX shape
+- workflow shape
+- domain or archetype intent
+- default stack affinity
+
+An app should not own:
+
+- low-level technical wiring
+- plugin dependency mechanics
+- concrete project identity
+- internal rendering details
+
+---
+
+## 3. Project
+
+A **project** is a concrete instantiated object.
+
+It chooses a stack preset and an app preset, assigns a real project name, and optionally adds overrides.
+
+Example:
 
 ```yaml
-name: my_stack
-
-plugins:
-  - react
-  - fastapi
-  - postgres
-  - redis
-  - celery
+kind: project
+name: MyApp
+uses:
+  stack: web-stack
+  app: finance-dashboard
+overrides: {}
 ```
 
-### Python model
-
-```python
-from dataclasses import dataclass, field
-from typing import Any
-
-@dataclass
-class StackConfig:
-    name: str
-    plugins: list[str]
-    options: dict[str, Any] = field(default_factory=dict)
-```
+A project is the main input to the current `graph`, `plan`, and `apply` commands.
 
 ---
 
-## Plugin Metadata
+## 4. Output
 
-Plugins declare metadata describing their capabilities and dependencies.
+**Output** is the rendered filesystem result of applying a project.
 
-```python
-from dataclasses import dataclass, field
+Example:
 
-@dataclass
-class PluginMetadata:
-    name: str
-    version: str
-    requires: list[str] = field(default_factory=list)
-    provides: list[str] = field(default_factory=list)
-    description: str = ""
-    compatible_core: str = ">=1.0.0"
+```text
+output/MyApp/
 ```
+
+Output is a result, not part of the reusable preset model.
+
+It may contain generated:
+
+- frontend files
+- backend files
+- worker files
+- Docker files
+- environment files
+- project README files
+
+---
+
+## Resolution Pipeline
+
+ForgeStack uses a layered resolution model.
+
+### Layers
+
+1. **Raw document**
+   - the project file the user passes in
+
+2. **Resolved document**
+   - the normalized project after referenced stack/app presets are loaded and merged
+
+3. **Render context**
+   - the structured context passed into plugins and templates
+
+### Why this matters
+
+This architecture allows generation to stay declarative while still letting templates and plugins see:
+
+- project identity
+- resolved stack info
+- resolved app info
+- values and overrides
+- features
+- plugin set
+
+That is one of the key shifts from the older stack-only model.
+
+---
+
+## Render Context
+
+The current architecture builds a render context that includes values such as:
+
+- raw project document
+- effective resolved document
+- project name
+- stack object
+- app object
+- values
+- plugin list
+- feature list
+- feature booleans
+
+This means template rendering is now **project-model aware**, not just plugin-name aware.
+
+That is why generated files can now include:
+
+- project name
+- stack name
+- app name
+- feature flags
+- resolved service settings
+
+---
+
+## Plugin Architecture
+
+ForgeStack still follows a **small core, plugin-driven behavior** model.
+
+### Core responsibilities
+- configuration loading
+- preset resolution
+- plugin discovery
+- dependency resolution
+- graph building
+- plan construction
+- plan execution
+
+### Plugin responsibilities
+Plugins declare what should be generated.
+
+Typical plugin contributions include:
+
+- create file actions
+- template selection
+- dependency declarations
+
+The core rule remains:
+
+**Core coordinates. Plugins declare. Executor applies.**
 
 ---
 
 ## Dependency Graph
 
-ForgeStack builds a directed graph representing plugin dependencies.
+The dependency graph remains a first-class primitive in the architecture.
 
-Example:
+### Why it matters
+The graph determines:
 
+- ordering
+- execution waves
+- dependency-aware planning
+- graph visualization
+- diagnostic clarity
+
+### Current path
+
+```text
+requested or resolved plugins
+  ↓
+dependency expansion
+  ↓
+graph build
+  ↓
+topological ordering
+  ↓
+plugin planning hooks
+  ↓
+plan actions
 ```
-React → FastAPI → Postgres
-            ↓
-          Redis → Celery
-```
 
-Python model:
-
-```python
-@dataclass
-class GraphNode:
-    name: str
-    plugin_name: str
-    requires: list[str]
-
-@dataclass
-class DependencyGraph:
-    nodes: dict[str, GraphNode]
-    edges: dict[str, set[str]]
-```
+This graph-first behavior is one of the defining parts of ForgeStack.
 
 ---
 
-## Plan Model
+## Planner and Executor
 
-A plan represents the set of actions ForgeStack will perform.
+ForgeStack follows a **plan-before-apply** architecture.
 
-```python
-from dataclasses import dataclass, field
-from typing import Any
+### Planner
+The planner:
 
-@dataclass
-class PlanAction:
-    kind: str
-    path: str | None = None
-    payload: dict[str, Any] = field(default_factory=dict)
-    description: str = ""
-```
+- resolves dependency order
+- runs plugin planning hooks
+- collects actions
+- validates the plan
 
-Plan container:
+### Executor
+The executor:
 
-```python
-@dataclass
-class Plan:
-    actions: list[PlanAction]
-    warnings: list[str]
-    diagnostics: list[str]
-```
+- applies plan actions
+- writes generated files
+- produces the output tree
 
----
+This separation improves:
 
-# Plugin Interface
-
-Plugins implement a simple lifecycle interface.
-
-```python
-from abc import ABC
-
-class Plugin(ABC):
-
-    metadata: PluginMetadata
-
-    def before_generate(self, ctx):
-        pass
-
-    def plan(self, ctx):
-        pass
-
-    def after_generate(self, ctx):
-        pass
-```
-
-Plugins should **declare intent**, not perform filesystem operations directly.
+- safety
+- clarity
+- reproducibility
+- future testability
+- future machine-readable output
 
 ---
 
-# Plugin Context
+## Template System
 
-Plugins interact with the planner through a context object.
+ForgeStack uses internal templates under:
 
-Example interface:
-
-```python
-class PluginContext:
-
-    def create_dir(self, path):
-        pass
-
-    def create_file(self, path, content):
-        pass
-
-    def update_file(self, path, content):
-        pass
-
-    def patch_file(self, path, pattern, replacement):
-        pass
-
-    def add_service(self, name, config):
-        pass
+```text
+forgestack/templates/
 ```
 
-This allows the planner to collect actions before execution.
+These are implementation details, not user-facing presets.
+
+Current template behavior includes:
+
+- canonical template IDs
+- alias resolution where needed
+- context-driven rendering
+- feature-aware rendering
+
+The user-facing schema and CLI should stay above this layer.
+
+That means users interact with:
+
+- stack presets
+- app presets
+- project objects
+
+and the engine internally maps those to plugins, plans, and templates.
 
 ---
 
-# Dependency Resolution
+## Current Generated Output Direction
 
-Plugin dependencies are resolved before planning.
+ForgeStack has already moved into generating a much fuller starter system.
 
-Example:
+A generated output may include:
 
+```text
+output/MyApp/
+  backend/
+    main.py
+    app_config.py
+    celery_app.py
+    tasks.py
+    requirements.txt
+    Dockerfile
+
+  frontend/
+    package.json
+    index.html
+    Dockerfile
+    src/
+      main.jsx
+      App.jsx
+
+  docker/
+    postgres.yml
+    redis.yml
+    celery.yml
+
+  docker-compose.yml
+  README.md
+  .env.example
+  .gitignore
 ```
-celery requires redis
-```
 
-Resolver algorithm:
-
-1. Load requested plugins
-2. Recursively load dependencies
-3. Build graph
-4. Topologically sort plugins
+This is much closer to a real generated application skeleton than the earlier demo-stage output.
 
 ---
 
-# Planner
+## Current Runtime Milestone
 
-The planner executes plugin planning hooks in dependency order.
+ForgeStack has crossed an important line:
 
-Planner flow:
+### From
+- declarative preset-driven scaffolding
 
-```
-resolve dependencies
-↓
-build dependency graph
-↓
-topological sort
-↓
-run plugin planning hooks
-↓
-collect actions
-↓
-validate plan
-```
+### To
+- preset-driven generation of a runnable connected full-stack starter app
 
-Planner output:
+The generated system now includes:
 
-```
-Plan:
+- React frontend
+- FastAPI backend
+- Redis
+- Postgres
+- Celery
+- Docker build flow
 
-+ create directory: backend
-+ create file: backend/main.py
-+ add service: redis
-```
+And it has been moving toward a connected vertical slice where:
 
----
+- frontend calls backend
+- backend exposes real endpoints
+- backend returns structured config
+- backend queues background work
+- frontend displays the result of that flow
 
-# Executor
-
-The executor applies the plan.
-
-Example operations:
-
-- create directories
-- create files
-- update files
-- patch files
-- write service definitions
-
-Example executor loop:
-
-```python
-for action in plan.actions:
-
-    if action.kind == "create_dir":
-        mkdir()
-
-    if action.kind == "create_file":
-        write_file()
-
-    if action.kind == "patch_file":
-        patch_file()
-```
+That is the most important current runtime milestone.
 
 ---
 
-# State Store
+## Near-Term Priorities
 
-ForgeStack maintains minimal state for reproducibility.
+The main near-term architectural priorities are:
 
-Example file:
+1. keep the stack/app/project/output model stable
+2. keep `presets/`, `projects/`, and `output/` cleanly separated
+3. keep the CLI aligned with explicit project creation
+4. strengthen the generated application skeleton path
+5. harden tests around generated output and runtime behavior
+6. reduce ambiguity between user-facing presets and internal templates
 
-```
-.forgestack/state.json
-```
-
-Example state:
-
-```json
-{
-  "stack_name": "my_stack",
-  "plan_hash": "abc123",
-  "files": [
-    {
-      "path": "backend/main.py",
-      "checksum": "sha256...",
-      "plugin": "fastapi"
-    }
-  ]
-}
-```
-
-This enables future commands:
-
-```
-forgestack diff
-forgestack upgrade
-```
+These priorities are what keep the project from drifting backward into mixed definitions and older patterns.
 
 ---
 
-# Execution Flow
+## Relationship to Future Expansion
 
-## forgestack plan
+ForgeStack may later expand into:
 
-```
-CLI
-→ load config
-→ discover plugins
-→ resolve dependencies
-→ build graph
-→ run planner
-→ output plan
-```
+- stronger data-science tooling
+- technician tooling
+- partial frontends
+- local-processing systems
+- SQLite-backed lightweight systems
+- hub-oriented application patterns
+- broader platform tool families
 
-## forgestack apply
+But those future lanes should be layered on top of the same architecture rather than used to redefine it prematurely.
 
-```
-CLI
-→ load config
-→ build plan
-→ execute actions
-→ write state
-```
+That is why the object model and current resolution path matter so much.
 
 ---
 
-# Example Plugin
+## Design Rule
 
-FastAPI plugin example:
+The architecture should remain aligned with the canonical object model and the current `devmake` workflow.
 
-```python
-class FastAPIPlugin(Plugin):
+That means:
 
-    metadata = PluginMetadata(
-        name="fastapi",
-        version="1.0",
-        requires=[],
-    )
+- stack remains reusable technical composition
+- app remains reusable product/archetype composition
+- project remains the concrete instance
+- output remains the generated result
 
-    def plan(self, ctx):
-
-        ctx.create_dir("backend")
-
-        ctx.create_file(
-            "backend/main.py",
-            '''
-from fastapi import FastAPI
-
-app = FastAPI()
-
-@app.get("/")
-def root():
-    return {"status": "ok"}
-'''
-        )
-```
-
----
-
-# Version Roadmap
-
-## ForgeStack v1
-
-Core platform features:
-
-- CLI renamed to `forgestack`
-- plugin interface stabilized
-- dependency graph
-- plan engine
-- executor
-- PyPI plugin discovery
-- official core plugins
-- example stacks
-
----
-
-## ForgeStack v1.5
-
-Lifecycle management features:
-
-- `forgestack diff`
-- `forgestack validate`
-- `forgestack upgrade`
-- plugin generator
-- compatibility checks
-- JSON plan output
-
----
-
-## ForgeStack v2
-
-Hardware + software stacks.
-
-New plugins:
-
-- arduino
-- platformio
-- esp32
-
-Example stack:
-
-```
-arduino
-mqtt
-fastapi
-postgres
-```
-
-Generated environment:
-
-```
-firmware/
-backend/
-dashboard/
-```
-
-Optional future GUI:
-
-```
-forgestack studio
-```
-
----
-
-# Design Rule
-
-The governing rule of ForgeStack architecture:
-
-**Core coordinates. Plugins declare. Executor applies.**
-
-This separation allows the ForgeStack core to remain small while supporting a large ecosystem of plugins.
+ForgeStack should continue growing from this structure instead of slipping back into mixed, hard-to-scale configuration patterns.

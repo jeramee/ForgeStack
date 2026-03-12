@@ -1,99 +1,218 @@
 # Introduction
 
-ForgeStack is a CLI platform for generating and managing development stacks using composable plugins.
+ForgeStack is a modular platform for generating applications and workflow systems from composable presets and plugins.
 
-It is best understood as:
+Its current active CLI is **`devmake`**.
 
-- **Terraform for development stacks**
-- **Nx for project graphs**
-- **Cookiecutter for scaffolding**
-
-That combination does not really exist today in a clean, lean form.
-
-## Documentation
-
-- [Main README](README.md)
-
-### Start here
-- [Introduction](docs/introduction.md)
-- [Docs Overview](docs/README_docs_overview.md)
-- [Architecture](docs/architecture.md)
-- [Roadmap](docs/roadmap.md)
-- [Contributing](docs/contributing.md)
-
-### Core platform
-- [Core Engine](docs/core-engine.md)
-- [Graph Engine](docs/graph-engine.md)
-- [Planner](docs/planner.md)
-- [Executor](docs/executor.md)
-- [Validation and State](docs/validation-and-state.md)
-- [Machine Readable Output](docs/machine-readable-output.md)
-
-### Plugin and stack model
-- [Plugin System](docs/plugin-system.md)
-- [Stack Format](docs/stack-format.md)
-- [CLI](docs/cli.md)
-
-### Strategy and design
-- [Lean Core Principles](docs/lean-core-principles.md)
-- [Product Strategy](docs/product-strategy.md)
-- [Data Science Strategy](docs/data-science-strategy.md)
-- [Hardware Strategy](docs/hardware-strategy.md)
-
-### Extended architecture notes
-- [ForgeStack Architecture Spec](docs/forgestack_architecture_spec.md)
+Rather than manually wiring a frontend, backend, database, queue, worker system, and surrounding configuration by hand, ForgeStack allows those pieces to be generated from a small declarative project definition.
 
 ---
 
-## What ForgeStack Does
+## What ForgeStack Is
 
-ForgeStack reads a stack configuration file and generates a working development environment.
+ForgeStack is not just a file scaffolder.
 
-Example:
+It is a generation platform built around a clean object model:
 
-```yaml
-name: ds_platform
+- **stack** = technical preset
+- **app** = product or archetype preset
+- **project** = concrete instance
+- **output** = rendered filesystem result
 
-plugins:
-  - python
-  - conda
-  - jupyter
-  - pandas
-  - scikit-learn
-  - postgres
-  - airflow
-  - mlflow
-  - fastapi
+This keeps technical composition, product intent, project identity, and generated artifacts separate.
+
+That separation makes the system easier to understand, easier to scale, and easier to extend.
+
+---
+
+## Current Active Tool
+
+ForgeStack is the platform.
+
+**`devmake`** is the current active CLI tool inside that platform.
+
+Current command family includes:
+
+```powershell
+devmake plugins
+devmake presets list
+devmake create project MyApp --stack web-stack --app finance-dashboard
+devmake graph projects/MyApp.yaml
+devmake plan projects/MyApp.yaml
+devmake apply projects/MyApp.yaml
 ```
 
-Then:
+This is the current working path and should be treated as the main user-facing workflow.
 
-```bash
-forgestack apply ds_platform.yaml
-```
+---
 
-Generated output may include:
+## What ForgeStack Does Today
+
+ForgeStack currently generates connected starter systems using:
+
+- reusable technical presets
+- reusable app presets
+- dependency-aware plugins
+- canonical internal templates
+- plan-before-apply execution
+
+The current working generated stack includes:
+
+- React frontend
+- FastAPI backend
+- PostgreSQL
+- Redis
+- Celery
+- Docker build flow
+
+The generated application skeleton is moving beyond placeholder output toward a real vertical slice, including:
+
+- frontend calling backend
+- backend exposing real endpoints
+- backend returning project config
+- backend queueing background work
+- frontend displaying the result of that flow
+
+---
+
+## Canonical Model
+
+ForgeStack now follows a clearer repository and object model than the older stack-only approach.
+
+### Repository shape
 
 ```text
-notebooks/
-data/
-pipelines/
-models/
-backend/
-docker-compose.yml
+presets/
+  stack/
+  app/
+
+projects/
+
+output/
+
+forgestack/
+  templates/
 ```
+
+### Meaning
+
+- `presets/stack/` contains reusable technical presets
+- `presets/app/` contains reusable product or archetype presets
+- `projects/` contains concrete project instances
+- `output/` contains generated artifacts
+- `forgestack/templates/` contains internal render templates
+
+This helps ForgeStack avoid mixing:
+- reusable definitions
+- concrete instances
+- generated files
+
+---
+
+## Example Project Flow
+
+Create a project:
+
+```powershell
+devmake create project MyApp --stack web-stack --app finance-dashboard
+```
+
+This creates a project definition such as:
+
+```yaml
+kind: project
+name: MyApp
+uses:
+  stack: web-stack
+  app: finance-dashboard
+overrides: {}
+```
+
+Then inspect and generate it:
+
+```powershell
+devmake graph projects/MyApp.yaml
+devmake plan projects/MyApp.yaml
+devmake apply projects/MyApp.yaml
+```
+
+Then run the generated system:
+
+```powershell
+cd output\MyApp
+docker compose up --build
+```
+
+---
 
 ## What ForgeStack Is Not
 
-ForgeStack does **not** replace existing frameworks, CLIs, SDKs, or infrastructure systems.
+ForgeStack does **not** try to replace the major frameworks and systems it works with.
 
-It does not try to become:
+It is not trying to become:
 
-- Kubernetes
+- React
+- FastAPI
+- PostgreSQL
+- Redis
+- Celery
 - Docker
 - Jupyter
+- Kedro
 - PlatformIO
-- Terraform
-- MLflow
 
-Instead, ForgeStack orchestrates them.
+Instead, ForgeStack is meant to **wire systems together**, not replace them.
+
+That is one of its central design rules.
+
+---
+
+## Current Product Direction
+
+ForgeStack should remain general enough for broad business and workflow applications.
+
+At the same time, its strongest near-term wedge is likely in:
+
+- data science tooling
+- technician tooling
+- internal workflow systems
+
+Longer term, the same platform may support:
+
+- operator panels
+- lightweight mobile-responsive frontends
+- local-processing tools
+- hub-oriented application patterns
+- document and workflow systems
+- broader ForgeStack tool families
+
+Those future lanes are important, but they should be built on top of the same core model rather than used to redefine it.
+
+---
+
+## Design Principle
+
+The core rule of ForgeStack is:
+
+**Core coordinates. Plugins declare. Executor applies.**
+
+That means:
+
+- the core stays small
+- plugins describe behavior
+- plans are generated before execution
+- output is deterministic and easier to validate
+
+This keeps the platform maintainable while still allowing it to grow.
+
+---
+
+## Where to Go Next
+
+If you are new to ForgeStack, read these next:
+
+- [Docs Overview](README_docs_overview.md)
+- [CLI](cli.md)
+- [Object Model](object-model.md)
+- [Presets and Projects](presets-and-projects.md)
+- [Current Architecture](current-architecture.md)

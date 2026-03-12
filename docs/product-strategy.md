@@ -1,134 +1,279 @@
 # Product Strategy
 
-ForgeStack should be built in three strategic phases.
+ForgeStack should be developed in clear phases that match both its current implementation reality and its longer-term platform direction.
 
-## Documentation
+ForgeStack is not just a generic scaffold tool. It is becoming a modular platform for generating applications, workflow systems, technician tools, and later more hub-oriented business systems.
 
-- [Main README](README.md)
+Its current active CLI is **`devmake`**.
 
-### Start here
-- [Introduction](docs/introduction.md)
-- [Docs Overview](docs/README_docs_overview.md)
-- [Architecture](docs/architecture.md)
-- [Roadmap](docs/roadmap.md)
-- [Contributing](docs/contributing.md)
+The strategy should stay disciplined:
 
-### Core platform
-- [Core Engine](docs/core-engine.md)
-- [Graph Engine](docs/graph-engine.md)
-- [Planner](docs/planner.md)
-- [Executor](docs/executor.md)
-- [Validation and State](docs/validation-and-state.md)
-- [Machine Readable Output](docs/machine-readable-output.md)
-
-### Plugin and stack model
-- [Plugin System](docs/plugin-system.md)
-- [Stack Format](docs/stack-format.md)
-- [CLI](docs/cli.md)
-
-### Strategy and design
-- [Lean Core Principles](docs/lean-core-principles.md)
-- [Product Strategy](docs/product-strategy.md)
-- [Data Science Strategy](docs/data-science-strategy.md)
-- [Hardware Strategy](docs/hardware-strategy.md)
-
-### Extended architecture notes
-- [ForgeStack Architecture Spec](docs/forgestack_architecture_spec.md)
+- broad enough for general business use
+- strongest and most credible first in data-science, technician, and internal workflow tooling
+- open to future hub-oriented and device-connected expansion
+- not locked into a single narrow vertical identity
 
 ---
 
-## Phase 1 — Compatibility Layer
+## Strategic Position
 
-First, ForgeStack should support the things developers already expect.
+ForgeStack should be positioned as a **preset-driven generation platform** that can grow into a broader workflow and tool-generation system.
 
-### Plugin categories
+### Near-term identity
+ForgeStack generates connected starter applications and workflow tools from:
 
-- Web app stack plugins
-- Infrastructure plugins
-- Observability plugins
-- Dev workflow plugins
+- stack presets
+- app presets
+- project objects
+- dependency-aware plugins
+- internal templates
 
-### Example v1 web stack
+### Strongest near-term wedge
+The clearest near-term specialization is:
 
-```yaml
-plugins:
-  - react
-  - fastapi
-  - postgres
-  - redis
-  - celery
-```
+- data-science tooling
+- technician tooling
+- internal workflow systems
 
-Generated:
+### Broader market posture
+ForgeStack should remain usable in broader business contexts, including:
 
-```text
-frontend/
-backend/
-docker-compose.yml
-.env
-Makefile
-```
+- internal applications
+- dashboards
+- workflow panels
+- local-processing tools
+- operational frontends
 
-This gives ForgeStack immediate practical value.
+### Future direction
+Longer term, the same architecture may support:
 
-## Phase 2 — Ecosystem Layer
+- partial frontends
+- mobile-responsive operational interfaces
+- local-to-central processing systems
+- hub-oriented application patterns
+- broader platform tooling beyond `devmake`
 
-After the core is stable, ForgeStack should expand through plugins.
+This broader direction is important, but it should be layered on top of the current architecture rather than used to destabilize it.
 
-Targets:
+---
 
-- PyPI plugin discovery
-- official plugin packages
-- example stacks
-- contributor-friendly plugin APIs
+## Strategic Rule
 
-## Phase 3 — Category Creation
+ForgeStack should be **general in architecture** and **specific in its strongest early wedge**.
 
-After trust is established, ForgeStack should pivot into spaces that are underserved.
+That means:
 
-### Data science platforms
+- do not over-specialize the core product around one niche
+- do not present the product as if every future lane is already active
+- do build toward a strong master-of-one identity in the near term
 
-```yaml
-plugins:
-  - jupyter
-  - pandas
-  - scikit-learn
-  - postgres
-  - airflow
-  - fastapi
-  - react_dashboard
-```
+A good expression of that is:
 
-Generated:
+- **jack of many workflows**
+- **master first in data-science / technician / workflow tooling**
 
-```text
-notebooks/
-data/
-pipelines/
-backend/
-dashboard/
-docker-compose.yml
-```
+---
 
-### Device + backend systems
+## Current Product Stage
 
-```yaml
-plugins:
-  - arduino
-  - mqtt
-  - fastapi
-  - postgres
-  - grafana
-```
+ForgeStack has already moved past a pure concept phase.
 
-Generated:
+It has crossed from:
 
-```text
-firmware/
-edge/
-backend/
-dashboard/
-docker-compose.yml
-```
+- plugin-demo scaffolding
 
-This is where ForgeStack becomes unique.
+into:
+
+- preset-driven generation of a runnable connected starter application
+
+The platform now has enough shape to justify a stronger product strategy with phased releases rather than open-ended exploration.
+
+---
+
+## Phase 1 — Stable Core / Golden Path
+
+### Goal
+Ship ForgeStack as a reliable preset-driven generation system with a strong core experience.
+
+### Primary outcomes
+- stabilize the object model
+- stabilize the current CLI
+- make generated output feel real and usable
+- prove that a stack preset + app preset + project object can generate a coherent runnable system
+
+### Core scope
+- `stack`
+- `app`
+- `project`
+- `output`
+- `presets/`
+- `projects/`
+- `output/`
+- `devmake` as active CLI
+
+### Canonical 1.0 generation story
+Generate a connected starter application with:
+
+- React frontend
+- FastAPI backend
+- PostgreSQL
+- Redis
+- Celery
+- Docker build flow
+
+### Key requirements
+- plan-before-apply
+- dependency-aware plugin planning
+- clean preset resolution
+- stronger generated full-stack output
+- explicit project creation workflow
+- documentation that reflects the real current model
+
+### Product meaning
+In this phase, ForgeStack is primarily:
+
+**a preset-driven application generator**
+
+---
+
+## Phase 1.5 — Workflow and Technician Expansion
+
+### Goal
+Expand beyond the single web-app golden path into stronger workflow and technician-oriented use cases.
+
+### Why this phase matters
+This is where ForgeStack becomes more than “app scaffolding” and starts becoming a generator for practical internal tools and operational systems.
+
+### Focus areas
+- JupyterLab / Notebook
+- Voilà
+- Kedro
+- SQLite
+- technician-oriented presets
+- workflow-oriented presets
+- partial frontends
+- mobile-responsive operational frontends
+
+### Why SQLite matters
+SQLite should become a first-class option for:
+
+- local workflow tools
+- local processing stages
+- temporary staging
+- OCR/document metadata staging
+- lightweight operational tools
+- technician-side or branch-side persistence
+
+This complements PostgreSQL rather than replacing it.
+
+### Product meaning
+In this phase, ForgeStack becomes:
+
+**an application, workflow, and technician-tool generator**
+
+---
+
+## Phase 2 — Hub-Oriented Platform Expansion
+
+### Goal
+Expand ForgeStack into a broader platform for hub-connected business workflows, multi-surface frontends, and richer operational ecosystems.
+
+### Focus areas
+- broader partial frontend strategy
+- local/central workflow patterns
+- stronger business-device hub positioning
+- future tool-family expansion
+- broader backend and device integration lanes
+
+### Possible future tool families
+- `devdata`
+- `devview`
+- `devhub`
+- `devai`
+- `devpkg`
+
+### Product meaning
+In this phase, ForgeStack becomes:
+
+**a broader workflow and hub-oriented generation platform**
+
+This is the point where ForgeStack can support not just application generation, but a family of related operational tools and generated system patterns.
+
+---
+
+## Market Positioning
+
+ForgeStack should not be boxed into only one future.
+
+It should remain capable of serving:
+
+- internal business applications
+- data-science tooling
+- technician workflows
+- local-processing tools
+- workflow systems
+- future operator or hub-facing frontends
+
+That broader positioning is valuable.
+
+At the same time, the product should avoid pretending all of those lanes are equally mature right now.
+
+The documentation and product messaging should reflect:
+
+- what exists now
+- what is near-term
+- what is future-facing
+
+---
+
+## What ForgeStack Should Not Become
+
+ForgeStack should not drift into:
+
+- an OCR-only product identity
+- a dashboard-only identity
+- a stack-only configuration model
+- a generic everything-platform with no strong wedge
+- a core bloated with domain-specific behavior that should live in plugins
+
+Its strength is the combination of:
+
+- clean object model
+- lean core
+- plugin-driven expansion
+- practical workflow generation
+
+---
+
+## Product-Lane Interpretation
+
+### Current lane
+Preset-driven application generation.
+
+### Strongest near-term lane
+Data-science, technician, and workflow tooling.
+
+### Future high-fit lanes
+- partial frontends
+- local-processing systems
+- workflow and operations tools
+- hub-connected business systems
+- document or operational workflow applications
+
+These future lanes are examples of where the platform can go. They should not redefine the core platform prematurely.
+
+---
+
+## Strategic Design Principle
+
+ForgeStack should keep one central rule:
+
+**stabilize the core model first, then broaden the platform in deliberate waves.**
+
+That means:
+
+- v1.0 is about credibility and coherence
+- v1.5 is about practical expansion
+- v2.0 is about platform breadth
+
+That sequence is what gives the product a believable path from useful tool to broader system.

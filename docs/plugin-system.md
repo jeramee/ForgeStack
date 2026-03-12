@@ -1,145 +1,193 @@
 # Plugin System
 
-ForgeStack is a plugin platform.
+## Purpose
 
-## Documentation
+ForgeStack is a plugin-driven platform.
 
-- [Main README](README.md)
+Plugins are the main extension mechanism through which ForgeStack generates different kinds of systems while keeping the core small.
 
-### Start here
-- [Introduction](docs/introduction.md)
-- [Docs Overview](docs/README_docs_overview.md)
-- [Architecture](docs/architecture.md)
-- [Roadmap](docs/roadmap.md)
-- [Contributing](docs/contributing.md)
-
-### Core platform
-- [Core Engine](docs/core-engine.md)
-- [Graph Engine](docs/graph-engine.md)
-- [Planner](docs/planner.md)
-- [Executor](docs/executor.md)
-- [Validation and State](docs/validation-and-state.md)
-- [Machine Readable Output](docs/machine-readable-output.md)
-
-### Plugin and stack model
-- [Plugin System](docs/plugin-system.md)
-- [Stack Format](docs/stack-format.md)
-- [CLI](docs/cli.md)
-
-### Strategy and design
-- [Lean Core Principles](docs/lean-core-principles.md)
-- [Product Strategy](docs/product-strategy.md)
-- [Data Science Strategy](docs/data-science-strategy.md)
-- [Hardware Strategy](docs/hardware-strategy.md)
-
-### Extended architecture notes
-- [ForgeStack Architecture Spec](docs/forgestack_architecture_spec.md)
+The plugin system is one of the most important structural parts of the platform because it allows ForgeStack to expand into new lanes without turning the core into a hard-coded collection of framework-specific behavior.
 
 ---
 
-## Stable v1 extension points
+## What Plugins Do
 
-These should be treated as stable interfaces in ForgeStack v1:
-
-- `Plugin`
-- `PluginMetadata`
-- `PluginContext`
-- `PlanAction`
-- `Plan`
-- `PluginRegistry`
-- `DependencyResolver`
-- `Planner`
-- `Executor`
-
-## Plugin responsibilities
+Plugins describe generation behavior.
 
 A plugin may:
 
-- generate files
-- patch files
-- add services
-- register commands
-- contribute notes
 - declare dependencies
+- contribute generation actions
+- choose or reference templates
+- contribute service-oriented generation behavior
+- participate in planning
 
-## Plugin contract
+Plugins are how ForgeStack expands into:
 
-Plugins should declare intent, not execute side effects directly.
+- frontend support
+- backend support
+- storage support
+- worker support
+- workflow support
+- future data or device lanes
 
-```python
-class Plugin:
-    metadata: PluginMetadata
+---
 
-    def before_generate(self, ctx):
-        pass
+## What Plugins Should Not Do
 
-    def plan(self, ctx):
-        pass
+Plugins should not bypass the core architecture.
 
-    def after_generate(self, ctx):
-        pass
-```
+That means they should not:
 
-## Official plugin families
+- directly replace planning
+- introduce uncontrolled side effects during discovery or planning
+- embed unrelated global business logic
+- treat the core object model as optional
+- mutate the filesystem outside the planned apply path without a very good reason
 
-### Compatibility layer plugins
-- react
-- vue
-- nextjs
+ForgeStack plugins should participate in the architecture, not work around it.
+
+---
+
+## Current Role in ForgeStack
+
+The current active path uses plugins to contribute the generated full-stack starter system.
+
+Examples include plugins for:
+
+- python
 - fastapi
-- django
-- node
+- react
 - postgres
 - redis
 - celery
-- nginx
-- docker
 
-### Infrastructure plugins
-- kubernetes
-- terraform
-- aws
-- gcp
-- azure
-- s3
+These plugins contribute to the current generated application path while relying on the same shared mechanisms:
 
-### Observability plugins
-- grafana
-- prometheus
-- loki
-- opentelemetry
-- sentry
+- project resolution
+- render context
+- dependency graph
+- planner
+- executor
 
-### Dev workflow plugins
-- pytest
-- precommit
-- ruff
-- black
-- github_actions
-- gitlab_ci
+This is what makes the plugin system practical rather than theoretical.
 
-### Data science plugins
-- python
-- conda
-- poetry
-- jupyter
-- pandas
-- scikit-learn
-- pytorch
-- tensorflow
-- duckdb
-- minio
-- airflow
-- prefect
-- dagster
+---
+
+## Plugin Responsibilities
+
+A plugin typically handles things like:
+
+### 1. Dependency declaration
+Example:
+- `fastapi` depends on `python`
+- `celery` depends on `redis`
+
+### 2. Plan contribution
+A plugin adds actions such as:
+- create file
+- render template
+- add supporting generated files
+
+### 3. Template use
+A plugin may reference internal templates under `forgestack/templates/`.
+
+### 4. Feature-aware generation
+A plugin may respond to render context features and values.
+
+These are all appropriate plugin responsibilities.
+
+---
+
+## Relationship to the Object Model
+
+Plugins operate **within** the current canonical object model.
+
+That means plugins are not the top-level model themselves.
+
+The top-level user-facing model is:
+
+- stack
+- app
+- project
+- output
+
+Plugins are part of how those higher-level objects get turned into generated results.
+
+This distinction matters because ForgeStack should remain:
+
+- preset-driven at the user level
+- plugin-driven at the implementation level
+
+That separation is healthy.
+
+---
+
+## Relationship to the Planner
+
+Plugins should declare intent and let the planner collect that intent into a coherent plan.
+
+### Good plugin behavior
+- declare dependencies
+- add create/update/patch actions
+- select templates
+- respond to resolved context
+
+### Bad plugin behavior
+- directly perform uncontrolled side effects
+- bypass the planner
+- duplicate core resolution logic
+- treat plan/apply separation as optional
+
+Plugins should help maintain the planner/executor split, not weaken it.
+
+---
+
+## Why the Plugin System Matters
+
+The plugin system is what allows ForgeStack to remain broad in possibility while staying small in the core.
+
+Without plugins, the core would need to understand every future lane directly.
+
+With plugins, ForgeStack can expand into:
+
+- richer application generation
+- data-science tooling
+- technician workflows
+- partial frontends
+- local-processing systems
+- future hardware or hub-oriented lanes
+
+This is why the plugin system is central to long-term scalability.
+
+---
+
+## Current Scope vs Future Scope
+
+### Current practical plugin scope
+Right now, the most important plugins are the ones that support the current connected starter-app path.
+
+That is the active trust-building path.
+
+### Future plugin scope
+Later, plugins may broaden into lanes such as:
+
+- jupyterlab
+- notebook
+- voila
 - kedro
-- mlflow
-- bentoml
-- ray
-
-### Hardware plugins
+- sqlite
 - arduino
-- platformio
-- esp32
-- mqtt
-- grafana
+- broader operational or workflow plugins
+
+Those future possibilities are important, but they should not distract from making the current plugin path solid first.
+
+---
+
+## Design Rule
+
+The plugin system should preserve one central principle:
+
+**plugins extend ForgeStack by declaring generation behavior inside the shared object model, graph, planner, and executor architecture.**
+
+That means the plugin system should help the platform grow without turning the core into a mess.

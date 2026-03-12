@@ -1,47 +1,86 @@
 # Stack Format
 
-Stacks are defined in YAML.
+The older stack-only format is no longer the main ForgeStack model.
 
-Example:
+ForgeStack now uses a broader object model built around:
 
+- **stack presets**
+- **app presets**
+- **project objects**
+- **output**
+
+That means the platform is no longer best described only in terms of “a stack YAML file with plugins.”
+
+---
+
+## What Changed
+
+Older ForgeStack documents centered on a single stack file such as:
+
+```yaml
 plugins:
   - react
   - fastapi
   - postgres
   - redis
   - celery
+```
 
-## Documentation
+That model was useful early on, but it mixed together too many concerns.
 
-- [Main README](README.md)
+ForgeStack now separates:
 
-### Start here
-- [Introduction](docs/introduction.md)
-- [Docs Overview](docs/README_docs_overview.md)
-- [Architecture](docs/architecture.md)
-- [Roadmap](docs/roadmap.md)
-- [Contributing](docs/contributing.md)
-
-### Core platform
-- [Core Engine](docs/core-engine.md)
-- [Graph Engine](docs/graph-engine.md)
-- [Planner](docs/planner.md)
-- [Executor](docs/executor.md)
-- [Validation and State](docs/validation-and-state.md)
-- [Machine Readable Output](docs/machine-readable-output.md)
-
-### Plugin and stack model
-- [Plugin System](docs/plugin-system.md)
-- [Stack Format](docs/stack-format.md)
-- [CLI](docs/cli.md)
-
-### Strategy and design
-- [Lean Core Principles](docs/lean-core-principles.md)
-- [Product Strategy](docs/product-strategy.md)
-- [Data Science Strategy](docs/data-science-strategy.md)
-- [Hardware Strategy](docs/hardware-strategy.md)
-
-### Extended architecture notes
-- [ForgeStack Architecture Spec](docs/forgestack_architecture_spec.md)
+- reusable technical composition
+- reusable product intent
+- concrete project instances
+- generated filesystem results
 
 ---
+
+## Current Canonical Model
+
+### Stack preset
+Reusable technical composition.
+
+### App preset
+Reusable product or archetype composition.
+
+### Project object
+Concrete instance that selects a stack and an app.
+
+### Output
+Rendered filesystem result.
+
+---
+
+## Current Project Example
+
+```yaml
+kind: project
+name: MyApp
+uses:
+  stack: web-stack
+  app: finance-dashboard
+overrides: {}
+```
+
+This project object is now the preferred input to:
+
+```powershell
+devmake graph projects/MyApp.yaml
+devmake plan projects/MyApp.yaml
+devmake apply projects/MyApp.yaml
+```
+
+---
+
+## Where to Read Next
+
+The older stack-only explanation has been superseded by these documents:
+
+- [Object Model](object-model.md)
+- [Presets and Projects](presets-and-projects.md)
+- [CLI](cli.md)
+- [Architecture](architecture.md)
+
+These documents reflect the current ForgeStack direction.

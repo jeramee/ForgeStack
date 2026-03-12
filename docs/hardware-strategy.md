@@ -1,53 +1,131 @@
-# Hardware and Device Strategy
+# Hardware Strategy
 
-ForgeStack should eventually support device + backend scaffolding.
+Hardware and device-oriented generation is an important future direction for ForgeStack, but it should be introduced in a staged and realistic way.
 
-## Why this is interesting
+ForgeStack should not be framed as an embedded-platform-first product today. Instead, hardware and device support should be treated as a later expansion lane built on top of the same core model that already supports application and workflow generation.
 
-Very few developer tools scaffold end-to-end systems that include:
-
-- firmware
-- messaging
-- backend APIs
-- storage
-- monitoring
-
-## Documentation
-
-- [Main README](README.md)
-
-### Start here
-- [Introduction](docs/introduction.md)
-- [Docs Overview](docs/README_docs_overview.md)
-- [Architecture](docs/architecture.md)
-- [Roadmap](docs/roadmap.md)
-- [Contributing](docs/contributing.md)
-
-### Core platform
-- [Core Engine](docs/core-engine.md)
-- [Graph Engine](docs/graph-engine.md)
-- [Planner](docs/planner.md)
-- [Executor](docs/executor.md)
-- [Validation and State](docs/validation-and-state.md)
-- [Machine Readable Output](docs/machine-readable-output.md)
-
-### Plugin and stack model
-- [Plugin System](docs/plugin-system.md)
-- [Stack Format](docs/stack-format.md)
-- [CLI](docs/cli.md)
-
-### Strategy and design
-- [Lean Core Principles](docs/lean-core-principles.md)
-- [Product Strategy](docs/product-strategy.md)
-- [Data Science Strategy](docs/data-science-strategy.md)
-- [Hardware Strategy](docs/hardware-strategy.md)
-
-### Extended architecture notes
-- [ForgeStack Architecture Spec](docs/forgestack_architecture_spec.md)
+Its current active CLI is **`devmake`**.
 
 ---
 
-## Example stack
+## Why This Direction Matters
+
+Very few developer tools help generate systems that connect:
+
+- device-side software
+- backend APIs
+- queues and workers
+- storage
+- dashboards
+- technician tools
+- operational frontends
+
+That makes hardware and device-connected workflows a potentially valuable future lane for ForgeStack.
+
+But that value appears only if the core platform is already strong.
+
+So hardware should be treated as a **future platform expansion**, not the first identity of the product.
+
+---
+
+## Strategic Position
+
+Hardware support should be positioned as:
+
+- a later expansion path
+- a future hub-oriented product lane
+- an orchestration problem, not a core-engine rewrite
+
+ForgeStack should not become an embedded SDK or firmware framework.
+
+Instead, it should do for device-connected systems what it does for web and workflow systems:
+
+- coordinate composition
+- resolve dependencies
+- generate connected system skeletons
+- wire multiple subsystems together
+
+That is the right level of ambition.
+
+---
+
+## What Hardware Means Here
+
+In ForgeStack, the hardware/device lane should be interpreted broadly as:
+
+- device-connected systems
+- firmware + backend compositions
+- edge + hub workflows
+- technician and operator interfaces
+- messaging and monitoring around devices
+- local and central coordination patterns
+
+This is more useful than thinking only in terms of raw firmware generation.
+
+---
+
+## Current Role in the Roadmap
+
+Hardware should remain a **future-facing lane** while the core platform is stabilized.
+
+### v1.0
+Do not let hardware redefine the product.
+
+### v1.5
+Introduce only early, disciplined steps where useful.
+
+### v2.0
+Expand into stronger device and hub-oriented system generation.
+
+That timing matters.
+
+---
+
+## Near-Term Guidance
+
+ForgeStack should not yet claim to be a full hardware orchestration platform.
+
+The immediate focus should stay on:
+
+- stable object model
+- presets and projects
+- generated connected app path
+- data-science / technician / workflow wedge
+
+That said, hardware strategy should still influence how the platform is designed now.
+
+Specifically:
+
+- keep the core generic
+- keep plugins as the expansion mechanism
+- keep room for future device-related presets
+- avoid assumptions that only web-app stacks matter
+
+This is the right way to prepare for the future without pretending it is already here.
+
+---
+
+## Early Device-Oriented Plugin Candidates
+
+When the time is right, early hardware/device-related candidates may include:
+
+- arduino
+- platformio
+- mqtt
+
+Possibly later:
+- esp32
+- monitoring and observability plugins
+- device-specific bridge plugins
+- local service wrappers
+
+These should be treated as plugins, not core features.
+
+---
+
+## Example Future Direction
+
+A future device-connected stack might eventually look like:
 
 ```yaml
 plugins:
@@ -58,27 +136,131 @@ plugins:
   - grafana
 ```
 
-Generated:
+Or, in the newer ForgeStack model, that intent would be better expressed through:
 
-```text
-firmware/
-edge/
-backend/
-dashboard/
-docker-compose.yml
-```
+- a stack preset
+- an app preset
+- a project object
 
-## Design rule
+rather than a single mixed plugin file.
 
-ForgeStack should not become an embedded framework.
+That distinction is important.
 
-It should orchestrate hardware toolchains the same way it orchestrates web and DS stacks.
+---
+
+## Business-Device and Hub Interpretation
+
+The most interesting long-term hardware direction is probably not “firmware scaffolding” by itself.
+
+It is the broader lane of:
+
+- business-device workflows
+- local and central coordination
+- operator and technician views
+- hub-connected applications
+- partial frontends around devices and workflows
+
+This is where the hardware strategy overlaps with the longer-term **hub-oriented platform** direction.
+
+That is a better strategic frame than trying to become a raw embedded development suite.
+
+---
+
+## Relation to Partial Frontends
+
+As ForgeStack broadens, hardware and device support will likely connect to:
+
+- mobile-responsive operator views
+- lightweight device-adjacent frontends
+- technician consoles
+- monitoring dashboards
+- workflow panels
+
+That means the hardware lane is not isolated. It is connected to the frontend and workflow strategy.
+
+This is one reason it belongs later, when those parts of the platform are stronger too.
+
+---
+
+## Relation to Local and Central Systems
+
+A future device-oriented ForgeStack system may involve:
+
+- local processing
+- branch-side tools
+- central APIs
+- queues
+- backend coordination
+- lightweight local persistence
+
+This is also where the future roles of:
+
+- SQLite
+- PostgreSQL
+- technician tooling
+- hub-oriented architecture
+
+start to overlap.
+
+The hardware strategy therefore should not be written as if it stands alone. It is part of a broader operational-system generation story.
+
+---
+
+## Version Guidance
+
+### v1.0
+Keep hardware support out of the core product identity.
+
+At most:
+- preserve plugin-based architecture that can support it later
+- avoid design decisions that block future device-oriented stacks
+
+### v1.5
+Potentially introduce a small early step such as:
+- Arduino as an early plugin
+- simple device bridge patterns
+- very light edge or messaging patterns if they fit the roadmap
+
+Only do this if it does not destabilize the stronger near-term workflow and data lanes.
+
+### v2.0
+This is where hardware/device strategy becomes a real platform expansion lane:
+
+- broader device ecosystem
+- richer hub-oriented patterns
+- more explicit local/central topology options
+- stronger operator and technician surfaces around devices
+
+---
+
+## Product Positioning Implication
+
+ForgeStack should not currently present itself as a hardware-first platform.
+
+A better positioning is:
+
+- near term: application, workflow, technician, and data-tool generation
+- longer term: broader workflow and hub-oriented systems, including device-connected lanes
+
+This keeps the product credible while leaving room for meaningful expansion.
+
+---
+
+## Design Rule
+
+The hardware strategy should follow the same core rule as the rest of ForgeStack:
+
+**the core coordinates, plugins expand, and generated systems stay compositional.**
 
 That means:
 
-- Arduino is a plugin
-- PlatformIO is a plugin
-- MQTT is a plugin
-- Grafana is a plugin
+- no embedded-framework bloat in the core
+- no hardware-specific rewrite of the object model
+- no special-case architecture that bypasses presets, projects, and output
 
-The core only wires the system together.
+When hardware support arrives, it should arrive through the same stable structure:
+
+- stack
+- app
+- project
+- output

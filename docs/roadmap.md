@@ -1,73 +1,307 @@
 # Roadmap
 
-## Documentation
+This roadmap reflects the current ForgeStack direction.
 
-- [Main README](README.md)
+It is based on the current active CLI (**`devmake`**), the current canonical object model, and the current implementation path around presets, projects, and generated output.
 
-### Start here
-- [Introduction](docs/introduction.md)
-- [Docs Overview](docs/README_docs_overview.md)
-- [Architecture](docs/architecture.md)
-- [Roadmap](docs/roadmap.md)
-- [Contributing](docs/contributing.md)
-
-### Core platform
-- [Core Engine](docs/core-engine.md)
-- [Graph Engine](docs/graph-engine.md)
-- [Planner](docs/planner.md)
-- [Executor](docs/executor.md)
-- [Validation and State](docs/validation-and-state.md)
-- [Machine Readable Output](docs/machine-readable-output.md)
-
-### Plugin and stack model
-- [Plugin System](docs/plugin-system.md)
-- [Stack Format](docs/stack-format.md)
-- [CLI](docs/cli.md)
-
-### Strategy and design
-- [Lean Core Principles](docs/lean-core-principles.md)
-- [Product Strategy](docs/product-strategy.md)
-- [Data Science Strategy](docs/data-science-strategy.md)
-- [Hardware Strategy](docs/hardware-strategy.md)
-
-### Extended architecture notes
-- [ForgeStack Architecture Spec](docs/forgestack_architecture_spec.md)
+ForgeStack is not being roadmapped as a stack-only CLI anymore. It is being roadmapped as a preset-driven generation platform with phased expansion.
 
 ---
 
-## ForgeStack v1
+## Roadmap Principles
 
-Core platform features:
+The roadmap should follow a few rules:
 
-- CLI renamed to `forgestack`
-- plugin interface stabilized
-- dependency graph
-- plan engine
+- stabilize what is already real before broadening scope
+- keep the object model clean
+- keep the core small
+- add new lanes in deliberate waves
+- distinguish clearly between now, near future, and future future
+
+---
+
+## Current State
+
+ForgeStack has already moved from:
+
+- early plugin-demo scaffolding
+
+to:
+
+- preset-driven generation of a runnable connected starter app
+
+The platform currently centers on:
+
+- stack presets
+- app presets
+- project objects
+- generated output folders
+- dependency-aware plugin planning
+- internal templates
+- `devmake` as the active CLI
+
+The generated starter path already includes:
+
+- React
+- FastAPI
+- PostgreSQL
+- Redis
+- Celery
+- Docker build flow
+
+This is the current base for the roadmap.
+
+---
+
+## v1.0 — Stable Core / Connected Starter App
+
+### Goal
+Ship a stable, coherent ForgeStack release around the current golden path.
+
+### Main outcomes
+- lock the object model
+- lock the CLI direction
+- harden preset resolution
+- harden plan/apply flow
+- make generated output consistently runnable
+- align docs with the real model
+
+### Core model to lock
+- `stack`
+- `app`
+- `project`
+- `output`
+
+### Repository model to lock
+```text
+presets/
+  stack/
+  app/
+
+projects/
+
+output/
+
+forgestack/
+  templates/
+```
+
+### CLI to stabilize
+```powershell
+devmake plugins
+devmake presets list
+devmake create project MyApp --stack web-stack --app finance-dashboard
+devmake graph projects/MyApp.yaml
+devmake plan projects/MyApp.yaml
+devmake apply projects/MyApp.yaml
+```
+
+### Runtime milestone
+A generated full-stack starter app that supports:
+
+- frontend calls backend
+- backend exposes real endpoints
+- backend returns structured config
+- backend queues background work
+- frontend displays the result of that flow
+
+### Documentation priorities
+- README
+- docs overview
+- introduction
+- CLI
+- object model
+- presets and projects
+- current architecture
+
+### Test priorities
+- preset resolution
+- render contract correctness
+- generated output correctness
+- runtime wiring correctness
+- task flow correctness
+
+### v1.0 product meaning
+ForgeStack is a **preset-driven application generator** with a real connected starter path.
+
+---
+
+## v1.5 — Workflow / Technician / Data Expansion
+
+### Goal
+Expand the platform into stronger workflow, technician, and data-oriented use cases.
+
+### Main additions
+- JupyterLab / Notebook
+- Voilà
+- Kedro
+- SQLite
+- workflow-oriented presets
+- technician-oriented presets
+- partial frontends
+- mobile-responsive operational frontends
+
+### Why this phase matters
+This is the point where ForgeStack becomes more than a generated web-app starter and starts becoming a platform for practical internal tools.
+
+### SQLite in v1.5
+SQLite should be added as a first-class lightweight backend for:
+
+- local workflow systems
+- temporary staging
+- branch-side tools
+- processing-side persistence
+- local operational tools
+
+This should complement PostgreSQL, which remains the stronger central multi-user backend.
+
+### v1.5 product meaning
+ForgeStack becomes an **application, workflow, and technician-tool generator**.
+
+---
+
+## v2.0 — Hub-Oriented Platform Expansion
+
+### Goal
+Expand ForgeStack into a broader platform for hub-connected systems, partial frontends, and richer operational workflows.
+
+### Main additions
+- stronger hub-oriented architecture patterns
+- broader partial frontend strategy
+- local/central deployment patterns
+- broader platform tool-family direction
+- wider workflow and operational system support
+
+### Possible future tools
+- `devdata`
+- `devview`
+- `devhub`
+- `devai`
+- `devpkg`
+
+### v2.0 product meaning
+ForgeStack becomes a **broader workflow and hub-oriented platform** rather than only an app generator.
+
+---
+
+## Immediate Next Milestones
+
+### M7 — Better Generated App UX / Real Task Flow
+Current next milestone includes:
+
+- task status polling
+- `GET /tasks/{id}` endpoint
+- returning task result once complete
+- frontend polling and displaying task completion instead of only showing “queued”
+
+This turns the generated app from a queue trigger demo into a real end-to-end async starter system.
+
+### After M7
+- contract hardening
+- docs alignment
+- stronger generated-output tests
+- 1.0 readiness pass
+
+---
+
+## Plugin Timing Guidance
+
+### 1.0 plugin set
+Keep 1.0 disciplined around the current official path.
+
+Strong 1.0 candidates:
+- python
+- fastapi
+- react
+- redis
+- postgres
+- celery
+
+### 1.5 plugin wave
+Add practical expansion plugins that align with the stronger near-term wedge.
+
+Good 1.5 candidates:
+- jupyterlab
+- notebook
+- voila
+- kedro
+- sqlite
+- arduino (early)
+- workflow-oriented frontend presets
+
+### 2.0 plugin wave
+Add broader platform-expansion plugins once the core and 1.5 lanes are stable.
+
+Good 2.0 candidates:
+- wider frontend target families
+- deeper hub/device ecosystem
+- broader microcontroller families
+- richer platform-tooling separation
+
+---
+
+## Documentation Roadmap
+
+### First pass
+Update docs that define the current truth:
+- README
+- docs overview
+- introduction
+- CLI
+- object model
+- presets and projects
+- current architecture
+
+### Second pass
+Update strategic docs:
+- product strategy
+- roadmap
+- data-science strategy
+- hardware strategy
+- platform tools
+
+### Third pass
+Clean engine docs and reduce duplication:
+- core engine
+- graph engine
+- planner
 - executor
-- PyPI plugin discovery
-- official core plugins
-- example stacks
-- JSON plan output
-- minimal state store
+- validation and state
+- plugin system
+- architecture spec cleanup
 
-## ForgeStack v1.5
+---
 
-Lifecycle and ecosystem features:
+## Product-Lane Roadmap
 
-- `forgestack diff`
-- `forgestack validate`
-- `forgestack upgrade`
-- `forgestack new plugin`
-- plugin compatibility checks
-- improved state handling
-- richer machine-readable outputs
+### Now
+- preset-driven connected starter apps
+- clear object model
+- stable core path
 
-## ForgeStack v2
+### Near future
+- data-science / technician / workflow tooling
+- local-processing support
+- SQLite-backed lightweight systems
+- partial frontends
 
-Category expansion:
+### Future future
+- hub-oriented application patterns
+- broader tool-family structure
+- broader workflow ecosystems
+- richer operational generation surfaces
 
-- hardware toolchain plugins
-- Arduino / PlatformIO support
-- device + backend example stacks
-- broader data science platform presets
-- optional GUI only after CLI adoption
+---
+
+## Summary
+
+### v1.0
+Stable core and connected generated starter app.
+
+### v1.5
+Workflow, technician, data, and lightweight-local expansion.
+
+### v2.0
+Broader platform and hub-oriented expansion.
+
+The roadmap should keep ForgeStack grounded in what is already real while making room for the stronger broader platform that can grow from the same foundation.

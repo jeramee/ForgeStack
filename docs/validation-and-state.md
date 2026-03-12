@@ -1,112 +1,179 @@
 # Validation and State
 
-ForgeStack should validate at multiple layers.
+## Purpose
 
-## Documentation
+Validation and state handling support trust, reproducibility, and future maintainability in ForgeStack.
 
-- [Main README](README.md)
+Validation ensures the system is working with a coherent project definition and coherent generation plan.
 
-### Start here
-- [Introduction](docs/introduction.md)
-- [Docs Overview](docs/README_docs_overview.md)
-- [Architecture](docs/architecture.md)
-- [Roadmap](docs/roadmap.md)
-- [Contributing](docs/contributing.md)
+State provides a possible foundation for future features such as:
 
-### Core platform
-- [Core Engine](docs/core-engine.md)
-- [Graph Engine](docs/graph-engine.md)
-- [Planner](docs/planner.md)
-- [Executor](docs/executor.md)
-- [Validation and State](docs/validation-and-state.md)
-- [Machine Readable Output](docs/machine-readable-output.md)
+- diff
+- upgrade
+- drift detection
+- ownership tracking of generated files
 
-### Plugin and stack model
-- [Plugin System](docs/plugin-system.md)
-- [Stack Format](docs/stack-format.md)
-- [CLI](docs/cli.md)
-
-### Strategy and design
-- [Lean Core Principles](docs/lean-core-principles.md)
-- [Product Strategy](docs/product-strategy.md)
-- [Data Science Strategy](docs/data-science-strategy.md)
-- [Hardware Strategy](docs/hardware-strategy.md)
-
-### Extended architecture notes
-- [ForgeStack Architecture Spec](docs/forgestack_architecture_spec.md)
+Validation matters now. State becomes more important as the platform matures.
 
 ---
 
-## Config validation
+## Validation Layers
 
-- stack file exists
-- plugin names valid
-- options conform to schema
+ForgeStack should validate at multiple layers.
 
-## Registry validation
+### 1. Project and preset validation
+Validate that:
 
-- plugin exists
-- metadata is complete
-- version compatibility is valid
+- the project file exists
+- the project shape is valid
+- referenced stack presets exist
+- referenced app presets exist
+- preset structure is valid
 
-## Graph validation
+### 2. Plugin and registry validation
+Validate that:
 
-- no missing dependencies
-- no cycles
+- plugins exist
+- plugin metadata is complete enough to use
+- dependencies can be resolved
 
-## Plan validation
+### 3. Graph validation
+Validate that:
 
-- no duplicate conflicting file actions
-- no invalid paths
-- no unsupported action kinds
+- there are no missing dependencies
+- there are no invalid cycles
+- the dependency model is coherent
 
-Example validator:
+### 4. Plan validation
+Validate that:
 
-```python
-class PlanValidator:
-    def validate(self, plan: Plan) -> list[str]:
-        errors: list[str] = []
-        seen_paths: dict[str, str] = {}
+- actions are structurally valid
+- paths are acceptable
+- conflicting actions are caught
+- unsupported action shapes are rejected
 
-        for action in plan.actions:
-            if action.path:
-                prior = seen_paths.get(action.path)
-                if prior and prior != action.kind:
-                    errors.append(
-                        f"Conflicting actions for path '{action.path}': {prior} vs {action.kind}"
-                    )
-                seen_paths[action.path] = action.kind
+This layered approach makes the platform easier to trust.
 
-        return errors
-```
+---
 
-## State design
+## Why Validation Matters More Now
 
-Recommended state file:
+Earlier scaffold tools can often get away with weak validation.
+
+ForgeStack increasingly cannot.
+
+That is because it is now generating richer starter systems with:
+
+- frontend/backend coordination
+- config contracts
+- worker wiring
+- service composition
+- more complete output trees
+
+As generation becomes more meaningful, bad assumptions become more expensive.
+
+Validation is therefore not just defensive programming. It is part of product quality.
+
+---
+
+## Relationship to the Object Model
+
+Validation should now be aligned with the current canonical model:
+
+- stack
+- app
+- project
+- output
+
+That means validation should not think only in terms of:
+- a single stack file
+- a flat plugin list
+
+Instead, it should validate:
+
+- project references
+- preset references
+- merged resolved shape
+- generation plan coherence
+
+This is one of the ways the newer architecture improves on the older mixed model.
+
+---
+
+## Plan Validation
+
+Plan validation is especially important because ForgeStack follows a plan-before-apply architecture.
+
+If the plan is wrong, apply may still execute mechanically and produce broken output.
+
+That is why plan validation should catch issues such as:
+
+- conflicting actions on the same path
+- invalid output paths
+- unsupported action kinds
+- inconsistent action payloads
+
+The planner and validation layers should work together to prevent obvious bad plans from reaching execution.
+
+---
+
+## State Design
+
+State is more future-facing than validation, but it is still worth describing clearly.
+
+A future ForgeStack state file might track things such as:
+
+- project identity
+- plan hash
+- generated files
+- checksums
+- plugin ownership
+
+Example conceptual location:
 
 ```text
 .forgestack/state.json
 ```
 
-Example:
+This would support later lifecycle operations if and when they become important.
 
-```json
-{
-  "stack_name": "my_stack",
-  "plan_hash": "abc123",
-  "files": [
-    {
-      "path": "backend/main.py",
-      "checksum": "sha256:...",
-      "plugin": "fastapi"
-    }
-  ]
-}
-```
+---
 
-This unlocks:
+## Why State Should Stay Modest for Now
 
-- diff
-- upgrade
+State is useful, but it should not become a premature source of complexity.
+
+Right now, ForgeStack benefits more from:
+
+- good object-model clarity
+- good plan correctness
+- strong output generation
+- strong runtime wiring
+- strong validation
+
+So state should remain practical and incremental rather than overbuilt.
+
+---
+
+## Future Uses for State
+
+As ForgeStack matures, state may help support:
+
+- diff between generations
+- upgrade behavior
 - drift detection
-- plugin ownership of generated files
+- safer regeneration
+- plugin ownership tracking
+- machine-readable tooling
+
+These are useful goals, but they should come after the current core path is solid.
+
+---
+
+## Design Rule
+
+Validation should be strong enough to protect the current generation path now.
+
+State should be introduced carefully enough to support future lifecycle features later.
+
+Together, they should make ForgeStack more trustworthy without making the core unnecessarily heavy.
