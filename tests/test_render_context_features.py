@@ -39,6 +39,7 @@ def test_build_render_context_exposes_features_and_has_feature():
     assert ctx["has_feature"]["reporting"] is False
     assert ctx["has_feature"]["filters"] is True
 
+
 def test_build_render_context_exposes_pipeline_workbench_features():
     raw_doc = {
         "kind": "project",
@@ -72,4 +73,38 @@ def test_build_render_context_exposes_pipeline_workbench_features():
     assert ctx["has_feature"]["workbench"] is True
     assert ctx["has_feature"]["notebooks"] is True
     assert ctx["has_feature"]["local_analysis"] is True
+    assert ctx["has_feature"]["quick_actions"] is True
+
+
+def test_build_render_context_exposes_device_ops_console_features():
+    raw_doc = {
+        "kind": "project",
+        "name": "DeviceOpsConsoleApp",
+    }
+
+    effective_doc = {
+        "kind": "resolved-project",
+        "name": "DeviceOpsConsoleApp",
+        "plugins": ["react", "fastapi", "sqlite", "arduino"],
+        "project": {"name": "DeviceOpsConsoleApp"},
+        "stack": {"name": "device-bridge-stack"},
+        "app": {
+            "name": "device-ops-console",
+            "features": {
+                "device_ops_console": True,
+                "technician_console": True,
+                "device_bridge": True,
+                "local_workflow": True,
+                "quick_actions": True,
+            },
+        },
+        "values": {},
+    }
+
+    ctx = _build_render_context(raw_doc, effective_doc)
+
+    assert ctx["has_feature"]["device_ops_console"] is True
+    assert ctx["has_feature"]["technician_console"] is True
+    assert ctx["has_feature"]["device_bridge"] is True
+    assert ctx["has_feature"]["local_workflow"] is True
     assert ctx["has_feature"]["quick_actions"] is True

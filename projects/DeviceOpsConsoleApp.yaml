@@ -1,0 +1,8 @@
+kind: project
+name: DeviceOpsConsoleApp
+uses:
+  stack: device-bridge-stack
+  app: device-ops-console
+overrides:
+  sqlite:
+    database: app.db

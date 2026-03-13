@@ -1,0 +1,10 @@
+name: device-ops-console
+kind: app
+summary: Lightweight technician-facing console for Arduino-style device bridge operations.
+stack: device-bridge-stack
+features:
+  device_ops_console: true
+  technician_console: true
+  device_bridge: true
+  local_workflow: true
+  quick_actions: true

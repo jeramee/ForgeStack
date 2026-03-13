@@ -1,0 +1,13 @@
+name: device-bridge-stack
+kind: stack
+summary: Device bridge stack with React, FastAPI, SQLite, and Arduino-oriented bridge scaffolding.
+plugins:
+  - react
+  - fastapi
+  - sqlite
+  - arduino
+services:
+  profile: device-bridge
+defaults:
+  sqlite:
+    database: app.db

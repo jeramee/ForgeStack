@@ -47,6 +47,15 @@ APP_CONFIG = {
     },
 {% endif %}
 
+{% if has_plugin.get("arduino") %}
+    "device": {
+        "enabled": True,
+        "bridge": "arduino",
+        "connection": "serial",
+        "sketch": "device/arduino/sketch.ino",
+    },
+{% endif %}
+
 {% if has_plugin.get("sqlite") %}
     "sqlite": {
         "enabled": {{ "True" if has_plugin.get("sqlite") else "False" }},

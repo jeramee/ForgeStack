@@ -202,10 +202,18 @@ const isNotebookView =
 const hasWorkflow = Boolean(config?.workflow?.enabled);
 const hasVoila = Boolean(config?.voila?.enabled);
 
+const isDeviceOpsConsole =
+  config?.app_name === "device-ops-console" ||
+  Boolean(config?.features?.device_ops_console);
+
+const hasDeviceBridge = Boolean(config?.device?.enabled);
+
   return (
     <div style={layoutStyle}>
       <h1>
-        {isTechnicianConsole
+        {isDeviceOpsConsole
+          ? "Device Ops Console"
+          : isTechnicianConsole
           ? "Technician Console"
           : isPipelineWorkbench
           ? "Pipeline Workbench"
@@ -332,6 +340,22 @@ const hasVoila = Boolean(config?.voila?.enabled);
           <section style={{ ...cardStyle }}>
             <h2 style={{ marginTop: 0 }}>Future Pipeline Actions</h2>
             <p>Later milestones may add local execution helpers, richer pipeline templates, and workflow launch actions.</p>
+          </section>
+        </>
+      )}
+
+      {hasDeviceBridge && (
+        <>
+          <section style={{ ...cardStyle }}>
+            <h2 style={{ marginTop: 0 }}>Device Bridge</h2>
+            <p><strong>Bridge:</strong> {config?.device?.bridge}</p>
+            <p><strong>Connection:</strong> {config?.device?.connection}</p>
+            <p><strong>Sketch:</strong> {config?.device?.sketch}</p>
+          </section>
+
+          <section style={{ ...cardStyle }}>
+            <h2 style={{ marginTop: 0 }}>Technician Actions</h2>
+            <p>Use this console as a starting point for local device checks, serial workflows, and technician-side bridge operations.</p>
           </section>
         </>
       )}
