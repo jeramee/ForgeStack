@@ -1,4 +1,0 @@
-plugins:
-  - react
-  - fastapi
-  - postgres

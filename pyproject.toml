@@ -20,4 +20,7 @@ dependencies = [
 devmake = "forgestack.cli.main:run_cli"
 
 [tool.setuptools]
-packages = ["forgestack"]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["forgestack*"]

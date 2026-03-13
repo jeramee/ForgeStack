@@ -11,7 +11,11 @@ Its current active CLI is **`devmake`**.
 Instead of manually wiring frontends, backends, databases, queues, workers, and infrastructure, ForgeStack generates a connected starter system from a small declarative project definition.
 
 **TL;DR:**  
-ForgeStack lets you combine a **stack preset** and an **app preset** into a concrete **project**, then generate a runnable output with a single apply command.
+ForgeStack can generate a connected full-stack starter app from a project definition in **one command**:
+
+`devmake apply projects/MyApp.yaml`
+
+Build the project definition once. Generate the full stack whenever you want.
 
 ---
 
@@ -34,7 +38,7 @@ That separation is a core design rule of the platform.
 
 ForgeStack has moved beyond a basic scaffold demo into a preset-driven generation system that can produce a runnable connected starter app.
 
-Current working generated stack includes:
+Current working generated full-stack slice includes:
 
 - React frontend
 - FastAPI backend
@@ -44,6 +48,15 @@ Current working generated stack includes:
 - Docker build flow
 - backend config endpoint
 - task queue trigger flow
+
+Implemented v1.5 lanes now also include:
+
+- SQLite-backed local workflow apps
+- technician console / mobile-responsive operational UI
+- Jupyter workspace lane
+- Voilà notebook-view bridge
+- structured workflow / Kedro scaffold
+- Arduino-first device bridge scaffold
 
 ForgeStack is still under active development, but the current direction is now centered on:
 
@@ -61,18 +74,31 @@ ForgeStack is still under active development, but the current direction is now c
 ```text
 presets/
   stack/
-    api-stack.yaml
     web-stack.yaml
+    api-stack.yaml
+    local-workflow-stack.yaml
+    data-workbench-stack.yaml
+    notebook-view-stack.yaml
+    structured-workflow-stack.yaml
+    device-bridge-stack.yaml
     ml-stack.yaml
 
   app/
     finance-dashboard.yaml
-    datascience-dashboard.yaml
-    simple-dashboard.yaml
-    ai-dashboard.yaml
+    technician-console.yaml
+    data-workbench.yaml
+    notebook-view.yaml
+    pipeline-workbench.yaml
+    device-ops-console.yaml
 
 projects/
   MyApp.yaml
+  LocalWorkflowApp.yaml
+  TechnicianConsoleApp.yaml
+  DataWorkbenchApp.yaml
+  NotebookViewApp.yaml
+  PipelineWorkbenchApp.yaml
+  DeviceOpsConsoleApp.yaml
 
 output/
   MyApp/

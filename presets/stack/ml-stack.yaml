@@ -1,0 +1,9 @@
+name: ml-stack
+kind: stack
+summary: Minimal machine-learning-oriented stack preset placeholder.
+plugins:
+  - react
+  - fastapi
+services:
+  profile: ml
+defaults: {}
