@@ -28,6 +28,16 @@ APP_CONFIG = {
     },
 {% endif %}
 
+{% if has_plugin.get("kedro") %}
+    "workflow": {
+        "enabled": True,
+        "engine": "kedro",
+        "pipeline_root": "pipelines",
+        "config_root": "conf",
+        "data_root": "data",
+    },
+{% endif %}
+
 {% if has_plugin.get("voila") %}
     "voila": {
         "enabled": True,

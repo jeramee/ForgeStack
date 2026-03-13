@@ -184,17 +184,31 @@ export default function App() {
     fontFamily: "Arial, sans-serif",
   };
 
-  const itemCountLabel = useMemo(() => `${items.length} item${items.length === 1 ? "" : "s"}`, [items.length]);
-  const isNotebookView =
-  config?.app_name === "notebook-view" || Boolean(config?.features?.published_view);
+const itemCountLabel = useMemo(
+  () => `${items.length} item${items.length === 1 ? "" : "s"}`,
+  [items.length]
+);
 
-  const hasVoila = Boolean(config?.voila?.enabled);
+
+
+const isPipelineWorkbench =
+  config?.app_name === "pipeline-workbench" ||
+  Boolean(config?.features?.pipeline_workbench);
+
+const isNotebookView =
+  config?.app_name === "notebook-view" ||
+  Boolean(config?.features?.published_view);
+
+const hasWorkflow = Boolean(config?.workflow?.enabled);
+const hasVoila = Boolean(config?.voila?.enabled);
 
   return (
     <div style={layoutStyle}>
       <h1>
         {isTechnicianConsole
           ? "Technician Console"
+          : isPipelineWorkbench
+          ? "Pipeline Workbench"
           : isDataWorkbench
           ? "Data Workbench"
           : isNotebookView
@@ -281,6 +295,28 @@ export default function App() {
                 ))}
               </div>
             )}
+          </section>
+        </>
+      )}
+
+      {hasWorkflow && (
+        <>
+          <section style={{ ...cardStyle }}>
+            <h2 style={{ marginTop: 0 }}>Workflow Overview</h2>
+            <p><strong>Engine:</strong> {config?.workflow?.engine}</p>
+            <p><strong>Pipeline Root:</strong> {config?.workflow?.pipeline_root}</p>
+            <p><strong>Config Root:</strong> {config?.workflow?.config_root}</p>
+            <p><strong>Data Root:</strong> {config?.workflow?.data_root}</p>
+          </section>
+
+          <section style={{ ...cardStyle }}>
+            <h2 style={{ marginTop: 0 }}>Pipeline Assets</h2>
+            <p>Structured workflow scaffolding is available for pipeline-oriented development.</p>
+          </section>
+
+          <section style={{ ...cardStyle }}>
+            <h2 style={{ marginTop: 0 }}>Data Staging</h2>
+            <p>Use the generated data and configuration folders as the starting point for local pipeline workflows.</p>
           </section>
         </>
       )}

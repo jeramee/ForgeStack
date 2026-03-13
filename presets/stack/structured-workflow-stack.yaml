@@ -1,0 +1,16 @@
+name: structured-workflow-stack
+kind: stack
+summary: Structured workflow stack with React, FastAPI, SQLite, Jupyter, and Kedro-oriented workflow scaffolding.
+plugins:
+  - react
+  - fastapi
+  - sqlite
+  - jupyter
+  - kedro
+services:
+  profile: structured-workflow
+defaults:
+  sqlite:
+    database: app.db
+  jupyter:
+    port: 8888

@@ -1,0 +1,11 @@
+name: pipeline-workbench
+kind: app
+summary: Structured workflow workbench with notebook access, pipeline scaffolding, and local workflow state.
+stack: structured-workflow-stack
+features:
+  pipeline_workbench: true
+  structured_workflow: true
+  workbench: true
+  notebooks: true
+  local_analysis: true
+  quick_actions: true

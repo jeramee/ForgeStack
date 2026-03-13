@@ -1,0 +1,10 @@
+kind: project
+name: PipelineWorkbenchApp
+uses:
+  stack: structured-workflow-stack
+  app: pipeline-workbench
+overrides:
+  sqlite:
+    database: app.db
+  jupyter:
+    port: 8888
