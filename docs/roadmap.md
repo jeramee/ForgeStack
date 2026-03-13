@@ -22,13 +22,7 @@ The roadmap should follow a few rules:
 
 ## Current State
 
-ForgeStack has already moved from:
-
-- early plugin-demo scaffolding
-
-to:
-
-- preset-driven generation of a runnable connected starter app
+ForgeStack has moved from early plugin-demo scaffolding into a preset-driven generation platform with multiple implemented vertical slices.
 
 The platform currently centers on:
 
@@ -40,23 +34,24 @@ The platform currently centers on:
 - internal templates
 - `devmake` as the active CLI
 
-The generated starter path already includes:
+Implemented slices now include:
 
-- React
-- FastAPI
-- PostgreSQL
-- Redis
-- Celery
-- Docker build flow
+- web-stack connected starter app generation
+- SQLite-backed local workflow foundation
+- technician console / mobile-responsive operational UI
+- Jupyter workspace lane
+- Voilà notebook-view bridge
+- structured workflow / Kedro scaffold
+- Arduino-first device bridge scaffold
 
-This is the current base for the roadmap.
+The current codebase is now in a hardening and release-prep phase rather than an initial architecture-definition phase.
 
 ---
 
 ## v1.0 — Stable Core / Connected Starter App
 
 ### Goal
-Ship a stable, coherent ForgeStack release around the current golden path.
+Establish the stable core ForgeStack generation path and connected starter-app baseline.
 
 ### Main outcomes
 - lock the object model
@@ -131,6 +126,8 @@ ForgeStack is a **preset-driven application generator** with a real connected st
 ### Goal
 Expand the platform into stronger workflow, technician, and data-oriented use cases.
 
+Much of this phase is now implemented, and the current focus has shifted to hardening and release preparation.
+
 ### Main additions
 - JupyterLab / Notebook
 - Voilà
@@ -186,48 +183,21 @@ ForgeStack becomes a **broader workflow and hub-oriented platform** rather than 
 
 ## Immediate Next Milestones
 
-### M7 — Better Generated App UX / Real Task Flow
-Current next milestone includes:
+### M1.5-H — Hardening and Release Prep
+Current focus includes:
 
-- task status polling
-- `GET /tasks/{id}` endpoint
-- returning task result once complete
-- frontend polling and displaying task completion instead of only showing “queued”
+- packaging hardening
+- test discovery hardening
+- CLI help and wording polish
+- docs consistency cleanup
+- implementation summary docs
+- release-prep refinement
 
-This turns the generated app from a queue trigger demo into a real end-to-end async starter system.
-
-### After M7
-- contract hardening
-- docs alignment
-- stronger generated-output tests
-- 1.0 readiness pass
-
----
-
-## Plugin Timing Guidance
-
-### 1.0 plugin set
-Keep 1.0 disciplined around the current official path.
-
-Strong 1.0 candidates:
-- python
-- fastapi
-- react
-- redis
-- postgres
-- celery
-
-### 1.5 plugin wave
-Add practical expansion plugins that align with the stronger near-term wedge.
-
-Good 1.5 candidates:
-- jupyterlab
-- notebook
-- voila
-- kedro
-- sqlite
-- arduino (early)
-- workflow-oriented frontend presets
+### After M1.5-H
+- stronger release polish
+- clearer public documentation
+- broader first-user onboarding
+- future milestone selection based on platform priorities
 
 ### 2.0 plugin wave
 Add broader platform-expansion plugins once the core and 1.5 lanes are stable.

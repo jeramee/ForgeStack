@@ -69,7 +69,7 @@ ForgeStack is still under active development, but the current direction is now c
 
 ---
 
-## Canonical Repository Model
+## Canonical Repository Model (Representative Example)
 
 ```text
 presets/
@@ -106,6 +106,8 @@ output/
 forgestack/
   templates/
 ```
+
+This is a representative repository shape, not a complete live inventory of every current preset.
 
 ### Meaning
 

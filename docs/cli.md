@@ -9,7 +9,7 @@ This command-line interface is centered on a preset-driven workflow built around
 - project objects
 - generated output
 
-The CLI should be read as the operational surface for the current ForgeStack model, not the older stack-only model.
+The CLI should be understood as the operational surface for the current ForgeStack model, not the older single mixed stack-file model.
 
 ---
 
@@ -268,7 +268,7 @@ The near-term CLI should stay centered on explicit project creation.
 devmake create project MyApp --stack web-stack --app finance-dashboard
 ```
 
-### Good future direction
+### Current recommended apply form
 ```powershell
 devmake apply projects/MyApp.yaml
 ```
@@ -277,8 +277,12 @@ devmake apply projects/MyApp.yaml
 ```powershell
 devmake apply MyApp
 ```
+Or even this with alias enabled:
+```powershell
+dvmk apply MyApp
+```
 
-That shorter form is useful later only if projects become more fully first-class objects in the CLI.
+This shorthand is intentionally future-facing and is not the current documented public interface.
 
 ---
 

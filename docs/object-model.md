@@ -112,10 +112,10 @@ kind: app
 summary: Dashboard-oriented finance application preset.
 stack: web-stack
 features:
-  - charts
-  - auth
-  - reporting
-  - admin
+  charts: true
+  auth: true
+  reporting: true
+  admin: true
 ```
 
 ---
@@ -302,7 +302,7 @@ the object model needs cleaner boundaries.
 
 ## Declarative Language Direction
 
-ForgeStack is moving toward a small declarative language.
+ForgeStack is built around a small declarative language and object model.
 
 Main nouns:
 

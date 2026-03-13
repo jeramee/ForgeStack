@@ -6,10 +6,10 @@ This is one of the most important design rules in the platform.
 
 The current canonical model is:
 
-- **stack preset**
-- **app preset**
-- **project object**
-- **generated output**
+- **stack** (technical preset)
+- **app** (product or archetype preset)
+- **project** (concrete instance)
+- **output** (rendered filesystem result)
 
 This document explains how those pieces relate to each other and how they are expected to live in the repository.
 
@@ -128,10 +128,10 @@ kind: app
 summary: Dashboard-oriented finance application preset.
 stack: web-stack
 features:
-  - charts
-  - auth
-  - reporting
-  - admin
+  charts: true
+  auth: true
+  reporting: true
+  admin: true
 ```
 
 ### What an app preset should own
@@ -232,18 +232,31 @@ The current recommended structure is:
 ```text
 presets/
   stack/
-    api-stack.yaml
     web-stack.yaml
+    api-stack.yaml
+    local-workflow-stack.yaml
+    data-workbench-stack.yaml
+    notebook-view-stack.yaml
+    structured-workflow-stack.yaml
+    device-bridge-stack.yaml
     ml-stack.yaml
 
   app/
     finance-dashboard.yaml
-    datascience-dashboard.yaml
-    simple-dashboard.yaml
-    ai-dashboard.yaml
+    technician-console.yaml
+    data-workbench.yaml
+    notebook-view.yaml
+    pipeline-workbench.yaml
+    device-ops-console.yaml
 
 projects/
   MyApp.yaml
+  LocalWorkflowApp.yaml
+  TechnicianConsoleApp.yaml
+  DataWorkbenchApp.yaml
+  NotebookViewApp.yaml
+  PipelineWorkbenchApp.yaml
+  DeviceOpsConsoleApp.yaml
 
 output/
   MyApp/
@@ -251,6 +264,10 @@ output/
 forgestack/
   templates/
 ```
+
+This is a representative repository shape, not a full inventory of every current preset.
+
+---
 
 ### Meaning
 

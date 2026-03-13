@@ -121,7 +121,7 @@ It should cover a broader lane including:
 - internal technical workbenches
 
 ### Recommended timing
-Primarily **1.5** and beyond.
+Conceptually justified in **1.5** and beyond, but not yet a standalone active CLI.
 
 ---
 
@@ -152,7 +152,7 @@ It should cover:
 - maybe stronger notebook-to-view publishing later
 
 ### Recommended timing
-Primarily **1.5** and beyond.
+Conceptually justified in **1.5** and beyond, but not yet a standalone active CLI.
 
 ---
 
@@ -334,4 +334,4 @@ For now, that means:
 
 ### ForgeStack = platform  
 ### `devmake` = active tool  
-### future tools = planned expansion
+### future tools = planned expansion, not current standalone public tools

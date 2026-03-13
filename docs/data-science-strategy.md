@@ -116,14 +116,14 @@ This is why data science is a natural fit rather than an artificial add-on.
 
 ## Near-Term Data Science Priorities
 
-The strongest near-term additions in this lane are:
+The strongest near-term additions in this lane have centered on:
 
-- **JupyterLab / Notebook**
+- **Jupyter / notebook workspace support**
 - **Voilà**
 - **Kedro**
 - **SQLite**
 
-These belong mainly in the **1.5 wave**, after the core connected-app path is stable.
+These belong mainly in the **1.5 wave**. Much of this lane is now implemented in scaffold or vertical-slice form, with the current focus shifting toward hardening, polish, and release preparation.
 
 ### Why JupyterLab / Notebook
 These provide technician and analyst workspaces.
@@ -148,7 +148,7 @@ This makes SQLite especially relevant for local or technician-oriented systems.
 
 ## Recommended Plugin Direction
 
-Strong candidates for the data-science and workflow lane include:
+The data-science and workflow lane is now best understood as a staged implementation direction rather than a purely hypothetical candidate list.
 
 ### Environment and execution
 - python
@@ -157,7 +157,7 @@ Strong candidates for the data-science and workflow lane include:
 
 ### Notebook and workspace
 - jupyter
-- jupyterlab
+- notebook workspace support
 
 ### Data and storage
 - postgres
@@ -185,17 +185,21 @@ The important point is not to add everything immediately. It is to grow this lan
 
 ## Recommended Preset Direction
 
-This lane is better expressed through **presets**, not just plugin lists.
+This lane is best expressed through **presets**, not just plugin lists.
 
-### Possible stack presets
+### Implemented or strongly aligned stack presets
 - `ml-stack`
 - `data-workbench-stack`
 - `local-workflow-stack`
-- `analysis-stack`
 
-### Possible app presets
+### Implemented or strongly aligned app presets
 - `datascience-dashboard`
 - `technician-console`
+- `data-workbench`
+- `pipeline-workbench`
+
+### Possible future additions
+- `analysis-stack`
 - `analysis-workbench`
 - `workflow-monitor`
 - `model-review-panel`

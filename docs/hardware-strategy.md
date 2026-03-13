@@ -105,9 +105,11 @@ This is the right way to prepare for the future without pretending it is already
 
 ---
 
-## Early Device-Oriented Plugin Candidates
+## Early Device-Oriented Plugin Direction
 
-When the time is right, early hardware/device-related candidates may include:
+An initial Arduino-first device bridge pattern is now aligned with the current platform direction.
+
+Early hardware/device-related additions may include:
 
 - arduino
 - platformio
@@ -216,8 +218,8 @@ At most:
 - avoid design decisions that block future device-oriented stacks
 
 ### v1.5
-Potentially introduce a small early step such as:
-- Arduino as an early plugin
+Introduce only small, disciplined early steps such as:
+- Arduino as an early plugin/scaffold lane
 - simple device bridge patterns
 - very light edge or messaging patterns if they fit the roadmap
 
