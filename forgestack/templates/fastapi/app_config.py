@@ -35,6 +35,8 @@ APP_CONFIG = {
         "pipeline_root": "pipelines",
         "config_root": "conf",
         "data_root": "data",
+        "sample_pipeline": "sample_pipeline",
+        "stages": ["ingest", "transform", "report"],
     },
 {% endif %}
 

@@ -1,0 +1,4 @@
+pipeline_name: sample_pipeline
+run_mode: local
+input_path: data/raw
+output_path: data/reporting

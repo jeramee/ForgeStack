@@ -311,12 +311,27 @@ const hasVoila = Boolean(config?.voila?.enabled);
 
           <section style={{ ...cardStyle }}>
             <h2 style={{ marginTop: 0 }}>Pipeline Assets</h2>
+            <p><strong>Starter Pipeline:</strong> {config?.workflow?.sample_pipeline}</p>
             <p>Structured workflow scaffolding is available for pipeline-oriented development.</p>
+          </section>
+
+          <section style={{ ...cardStyle }}>
+            <h2 style={{ marginTop: 0 }}>Pipeline Stages</h2>
+            <ul style={{ paddingLeft: "1.25rem", marginBottom: 0 }}>
+              {(config?.workflow?.stages || []).map((stage) => (
+                <li key={stage}>{stage}</li>
+              ))}
+            </ul>
           </section>
 
           <section style={{ ...cardStyle }}>
             <h2 style={{ marginTop: 0 }}>Data Staging</h2>
             <p>Use the generated data and configuration folders as the starting point for local pipeline workflows.</p>
+          </section>
+
+          <section style={{ ...cardStyle }}>
+            <h2 style={{ marginTop: 0 }}>Future Pipeline Actions</h2>
+            <p>Later milestones may add local execution helpers, richer pipeline templates, and workflow launch actions.</p>
           </section>
         </>
       )}
