@@ -44,7 +44,10 @@ export default function App() {
   const featureEntries = config?.features ? Object.entries(config.features) : [];
   const isTechnicianConsole =
     config?.app_name === "technician-console" || Boolean(config?.features?.technician_console);
+  const isDataWorkbench =
+    config?.app_name === "data-workbench" || Boolean(config?.features?.workbench);
   const hasSQLite = Boolean(config?.sqlite?.enabled);
+  const hasJupyter = Boolean(config?.jupyter?.enabled);
 
   async function loadItems() {
     try {
@@ -185,7 +188,13 @@ export default function App() {
 
   return (
     <div style={layoutStyle}>
-      <h1>{isTechnicianConsole ? "Technician Console" : "ForgeStack Generated App"}</h1>
+      <h1>
+        {isTechnicianConsole
+          ? "Technician Console"
+          : isDataWorkbench
+          ? "Data Workbench"
+          : "ForgeStack Generated App"}
+      </h1>
 
       <section style={{ ...cardStyle }}>
         <h2 style={{ marginTop: 0 }}>Configuration</h2>
@@ -268,6 +277,23 @@ export default function App() {
             )}
           </section>
         </>
+      )}
+
+      {hasJupyter && (
+        <section style={{ ...cardStyle }}>
+          <h2 style={{ marginTop: 0 }}>Notebook Workspace</h2>
+          <p><strong>Status:</strong> Available</p>
+          <p><strong>Port:</strong> {config?.jupyter?.port}</p>
+          <p>
+            <a
+              href={`http://localhost:${config?.jupyter?.port || 8888}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Open Jupyter Workspace
+            </a>
+          </p>
+        </section>
       )}
 
       {config?.features?.auth && (

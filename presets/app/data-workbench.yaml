@@ -1,0 +1,9 @@
+name: data-workbench
+kind: app
+summary: Browser-based local workbench with notebook workspace support.
+stack: data-workbench-stack
+features:
+  workbench: true
+  notebooks: true
+  local_analysis: true
+  quick_actions: true

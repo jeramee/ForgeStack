@@ -15,6 +15,7 @@ TEMPLATE_ALIASES = {
     "celery_tasks": "celery/tasks.py",
     "celery_docker": "docker/celery.yml",
     "fastapi_main": "fastapi/main.py",
+    "jupyter_readme": "jupyter/README.md",
 }
 
 

@@ -36,6 +36,17 @@ services:
       - "{{ values.get('postgres', {}).get('port', 5432) }}:5432"
 {% endif %}
 
+{% if has_plugin.get("jupyter") %}
+  jupyter:
+    image: jupyter/base-notebook:python-3.11
+    working_dir: /home/jovyan/work
+    volumes:
+      - ./notebooks:/home/jovyan/work
+    ports:
+      - "{{ values.get('jupyter', {}).get('port', 8888) }}:8888"
+    command: start-notebook.py --NotebookApp.token=''
+{% endif %}
+
 {% if has_plugin.get("redis") %}
   redis:
     image: redis:7

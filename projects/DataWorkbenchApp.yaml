@@ -1,0 +1,10 @@
+kind: project
+name: DataWorkbenchApp
+uses:
+  stack: data-workbench-stack
+  app: data-workbench
+overrides:
+  sqlite:
+    database: app.db
+  jupyter:
+    port: 8888

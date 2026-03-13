@@ -1,0 +1,10 @@
+name: data-workbench-stack
+kind: stack
+summary: Data workbench stack with React, FastAPI, SQLite, and Jupyter.
+plugins:
+  - react
+  - fastapi
+  - sqlite
+  - jupyter
+services:
+  profile: data-workbench

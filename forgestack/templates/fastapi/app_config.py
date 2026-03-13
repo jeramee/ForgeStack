@@ -20,6 +20,14 @@ APP_CONFIG = {
         "database": "{{ values.get('postgres', {}).get('db', 'app') }}",
     },
 {% endif %}
+
+{% if has_plugin.get("jupyter") %}
+    "jupyter": {
+        "enabled": True,
+        "port": {{ values.get('jupyter', {}).get('port', 8888) }},
+    },
+{% endif %}
+
 {% if has_plugin.get("sqlite") %}
     "sqlite": {
         "enabled": {{ "True" if has_plugin.get("sqlite") else "False" }},
