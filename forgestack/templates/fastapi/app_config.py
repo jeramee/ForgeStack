@@ -28,6 +28,13 @@ APP_CONFIG = {
     },
 {% endif %}
 
+{% if has_plugin.get("voila") %}
+    "voila": {
+        "enabled": True,
+        "port": {{ values.get('voila', {}).get('port', 8866) }},
+    },
+{% endif %}
+
 {% if has_plugin.get("sqlite") %}
     "sqlite": {
         "enabled": {{ "True" if has_plugin.get("sqlite") else "False" }},

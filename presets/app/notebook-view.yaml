@@ -1,0 +1,9 @@
+name: notebook-view
+kind: app
+summary: Notebook-backed browser view with workspace and published Voilà surface.
+stack: notebook-view-stack
+features:
+  workbench: true
+  notebooks: true
+  published_view: true
+  quick_actions: true

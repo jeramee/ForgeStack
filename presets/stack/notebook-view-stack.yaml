@@ -1,0 +1,11 @@
+name: notebook-view-stack
+kind: stack
+summary: Stack with React, FastAPI, SQLite, Jupyter, and Voilà for notebook-backed views.
+plugins:
+  - react
+  - fastapi
+  - sqlite
+  - jupyter
+  - voila
+services:
+  profile: notebook-view

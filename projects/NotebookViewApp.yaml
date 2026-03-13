@@ -1,0 +1,12 @@
+kind: project
+name: NotebookViewApp
+uses:
+  stack: notebook-view-stack
+  app: notebook-view
+overrides:
+  sqlite:
+    database: app.db
+  jupyter:
+    port: 8888
+  voila:
+    port: 8866

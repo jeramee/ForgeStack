@@ -185,6 +185,10 @@ export default function App() {
   };
 
   const itemCountLabel = useMemo(() => `${items.length} item${items.length === 1 ? "" : "s"}`, [items.length]);
+  const isNotebookView =
+  config?.app_name === "notebook-view" || Boolean(config?.features?.published_view);
+
+  const hasVoila = Boolean(config?.voila?.enabled);
 
   return (
     <div style={layoutStyle}>
@@ -193,6 +197,8 @@ export default function App() {
           ? "Technician Console"
           : isDataWorkbench
           ? "Data Workbench"
+          : isNotebookView
+          ? "Notebook View Bridge"
           : "ForgeStack Generated App"}
       </h1>
 
@@ -295,6 +301,23 @@ export default function App() {
           </p>
         </section>
       )}
+
+      {hasVoila && (
+          <section style={{ ...cardStyle }}>
+            <h2 style={{ marginTop: 0 }}>Notebook View Bridge</h2>
+            <p><strong>Status:</strong> Available</p>
+            <p><strong>Port:</strong> {config?.voila?.port}</p>
+            <p>
+              <a
+                href={`http://localhost:${config?.voila?.port || 8866}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open Voilà View
+              </a>
+            </p>
+          </section>
+        )}
 
       {config?.features?.auth && (
         <section style={{ ...cardStyle }}>
