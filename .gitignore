@@ -135,7 +135,9 @@ ehthumbs.db
 # Local private wrappers / launchers
 private/
 private_*/
+private-*/
 *private/
+*_private/
 *_private.py
 *_private.ps1
 *_private.bat
@@ -199,3 +201,5 @@ tree.py
 flatten_anytree.py
 products/
 widgets/
+FLATTENED_CODE.txt
+tree.txt

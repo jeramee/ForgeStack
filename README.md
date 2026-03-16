@@ -385,5 +385,3 @@ See [Contributing](docs/contributing.md).
 ## License
 
 MIT License
-#   f o r g e s t a c k - p r i v a t e  
- 
