@@ -24,6 +24,10 @@ def test_generated_voila_vertical_slice(tmp_path):
     frontend_app = (output_root / "frontend" / "src" / "App.jsx").read_text(encoding="utf-8")
     voila_demo = (output_root / "notebooks" / "voila_demo.ipynb").read_text(encoding="utf-8")
 
+    env_example = (output_root / ".env.example").read_text(encoding="utf-8")
+    readme = (output_root / "README.md").read_text(encoding="utf-8")
+
+
     assert '"project_name": "NotebookViewApp"' in app_config
     assert '"app_name": "notebook-view"' in app_config
     assert '"voila": {' in app_config
@@ -36,8 +40,27 @@ def test_generated_voila_vertical_slice(tmp_path):
     assert '"8866:8866"' in compose
 
     assert "Notebook View Bridge" in frontend_app
-    assert "Open Voilà View" in frontend_app
+    assert "Open Voila View" in frontend_app
     assert "config?.voila?.enabled" in frontend_app
 
     assert '"nbformat": 4' in voila_demo
-    assert "Hello from the ForgeStack Voilà view bridge" in voila_demo
+    assert "Hello from the ForgeStack Voila view bridge" in voila_demo
+
+    assert "JUPYTER_PORT=8888" in env_example
+    assert "VOILA_PORT=8866" in env_example
+    assert "POSTGRES_" not in env_example
+    assert "REDIS_" not in env_example
+
+    assert "- Notebook Workspace: Jupyter" in readme
+    assert "- Notebook View: Voila" in readme
+    assert "- Database: SQLite" in readme
+    assert "- Cache/Queue: Redis" not in readme
+    assert "- Worker: Celery" not in readme
+
+    assert "POSTGRES_" not in env_example
+    assert "REDIS_" not in env_example
+
+    assert "- Database: SQLite" in readme
+    assert "- Cache/Queue: Redis" not in readme
+    assert "- Worker: Celery" not in readme
+

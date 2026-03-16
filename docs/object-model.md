@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Next: Presets and Projects](presets-and-projects.md)  
+> **Related:** [Architecture](architecture.md)
+
 # Object Model
 
 ForgeStack is built around a small declarative object model.
@@ -191,11 +197,11 @@ The relationship is:
 
 ```text
 stack + app + project overrides
-            ↓
+            ->
        resolved project
-            ↓
+            ->
           plan
-            ↓
+            ->
          output
 ```
 
@@ -376,3 +382,9 @@ The object model should remain general enough to support future workflow, techni
 - output
 
 That separation is the lock that keeps ForgeStack from drifting back into mixed object definitions.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Next: Presets and Projects](presets-and-projects.md)  
+**Related:** [Architecture](architecture.md)

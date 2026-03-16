@@ -131,6 +131,60 @@ temp/
 
 ehthumbs.db
 
+# ---- Private boundary protection ----
+# Local private wrappers / launchers
+private/
+private_*/
+*private/
+*_private.py
+*_private.ps1
+*_private.bat
+*_private.cmd
+run_private.*
+launch_private.*
+wrapper_private.*
+
+# Internal request/response fixtures and captures
+*.private.json
+*.private.yaml
+*.private.yml
+*.private.log
+*.capture.json
+*.response.json
+*.request.json
+
+# Internal sandbox / local-only configs
+.env.private
+.env.internal
+.env.local.private
+internal.config.*
+sandbox.config.*
+policy.manifest.*
+ownership.manifest.*
+
+# Internal experimental service files / dashboards
+admin-temp/
+temp-admin/
+private-ui/
+private-service/
+private-dashboard/
+internal-ui/
+internal-service/
+
+# Orchestration traces / notes
+internal-notes/
+notes-internal/
+orchestration-notes/
+*.internal.md
+*.private.md
+*.scratch.md
+
+# Local private package breadcrumbs
+/vendor-private/
+/private-dist/
+/private-build/
+/private-wheelhouse/
+
 ############################################################
 # User Files
 ############################################################
@@ -143,3 +197,5 @@ output
 
 tree.py
 flatten_anytree.py
+products/
+widgets/

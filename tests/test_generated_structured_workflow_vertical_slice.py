@@ -23,6 +23,10 @@ def test_generated_structured_workflow_vertical_slice(tmp_path):
     compose = (output_root / "docker-compose.yml").read_text(encoding="utf-8")
     frontend_app = (output_root / "frontend" / "src" / "App.jsx").read_text(encoding="utf-8")
 
+    env_example = (output_root / ".env.example").read_text(encoding="utf-8")
+    readme = (output_root / "README.md").read_text(encoding="utf-8")
+
+
     pipelines_readme = (output_root / "pipelines" / "README.md").read_text(encoding="utf-8")
     pipelines_init = (output_root / "pipelines" / "__init__.py").read_text(encoding="utf-8")
     sample_pipeline = (output_root / "pipelines" / "sample_pipeline.py").read_text(encoding="utf-8")
@@ -78,3 +82,12 @@ def test_generated_structured_workflow_vertical_slice(tmp_path):
     assert "pipeline_name: sample_pipeline" in conf_base_parameters
     assert "run_mode: local" in conf_base_parameters
     assert "# Local Configuration" in conf_local_readme
+
+    assert "JUPYTER_PORT=8888" in env_example
+    assert "POSTGRES_" not in env_example
+    assert "REDIS_" not in env_example
+
+    assert "- Notebook Workspace: Jupyter" in readme
+    assert "- Database: SQLite" in readme
+    assert "- Cache/Queue: Redis" not in readme
+    assert "- Worker: Celery" not in readme

@@ -1,3 +1,12 @@
+# NOTE:
+# This module contains data structures used by a richer parallel composition /
+# execution path. The current authoritative public `devmake apply` flow does
+# not directly use most of these model types.
+# Public generation behavior currently flows through:
+# cli/main.py -> stack_loader.py -> preset_resolver.py -> registry.py
+# -> planner.py -> plan_executor.py
+# Do not expand this model surface for public behavior unless intentionally
+# migrating the active public path.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -28,6 +37,7 @@ class ServiceSpec:
     kind: str
     image: str | None = None
     build_context: str | None = None
+    working_dir: str | None = None
     command: list[str] = field(default_factory=list)
     ports: list[str] = field(default_factory=list)
     env: dict[str, str] = field(default_factory=dict)

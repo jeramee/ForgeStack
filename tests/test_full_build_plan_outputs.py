@@ -54,3 +54,26 @@ def test_full_build_plan_outputs(tmp_path):
     assert "setInterval" in frontend_app
     assert "setTaskState" in frontend_app
     assert "setTaskResult" in frontend_app
+
+    compose = (output_root / "docker-compose.yml").read_text(encoding="utf-8")
+    env_example = (output_root / ".env.example").read_text(encoding="utf-8")
+    readme = (output_root / "README.md").read_text(encoding="utf-8")
+
+    assert '"5432:5432"' not in compose
+    assert '"6379:6379"' not in compose
+    assert "POSTGRES_DB=" in env_example
+    assert "REDIS_PORT=" in env_example
+    assert "- Database: PostgreSQL" in readme
+    assert "- Worker: Celery" in readme
+
+    assert "## Run" in readme
+    assert "```powershell" in readme
+
+    assert "postgres:" in compose
+    assert "redis:" in compose
+    assert "celery:" in compose
+
+    assert "- Frontend: React" in readme
+    assert "- Backend: FastAPI" in readme
+    assert "- Cache/Queue: Redis" in readme
+    assert "docker compose up --build" in readme

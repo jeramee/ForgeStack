@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Executor](executor.md) | [Next: Machine-Readable Output](machine-readable-output.md)  
+> **Related:** [Roadmap](roadmap.md)
+
 # Validation and State
 
 ## Purpose
@@ -177,3 +183,9 @@ Validation should be strong enough to protect the current generation path now.
 State should be introduced carefully enough to support future lifecycle features later.
 
 Together, they should make ForgeStack more trustworthy without making the core unnecessarily heavy.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Executor](executor.md) | [Next: Machine-Readable Output](machine-readable-output.md)  
+**Related:** [Roadmap](roadmap.md)

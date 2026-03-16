@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Architecture](architecture.md) | [Next: Roadmap](roadmap.md)  
+> **Related:** [Presets and Projects](presets-and-projects.md)
+
 # CLI
 
 ForgeStack currently uses **`devmake`** as its active CLI.
@@ -328,3 +334,9 @@ The CLI should stay aligned with the canonical object model:
 - output
 
 Commands should make those concepts clearer, not blur them back together.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Architecture](architecture.md) | [Next: Roadmap](roadmap.md)  
+**Related:** [Presets and Projects](presets-and-projects.md)

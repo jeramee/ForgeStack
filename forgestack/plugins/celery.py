@@ -1,6 +1,4 @@
 from forgestack.core.plugin_api import Plugin
-from forgestack.core.plugin_api import Plugin
-
 
 class CeleryPlugin(Plugin):
 

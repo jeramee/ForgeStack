@@ -3,7 +3,7 @@ kind: app
 name: finance-dashboard
 summary: Dashboard-oriented finance application preset for reporting, metrics, and operational oversight.
 
-default_stack: web-stack
+stack: web-stack
 
 archetype:
   category: dashboard

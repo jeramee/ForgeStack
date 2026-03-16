@@ -16,6 +16,9 @@ from forgestack.core.stack_loader import (
 from forgestack.core.preset_resolver import resolve_document
 from forgestack.core.plan_executor import execute_plan
 
+# `devmake` currently uses the active public path:
+# load_stack_yaml -> resolve_document -> _build_render_context
+# -> PluginRegistry.discover -> create_plan -> execute_plan
 
 def _run_safely(fn):
     try:

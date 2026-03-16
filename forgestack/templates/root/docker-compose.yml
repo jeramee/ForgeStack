@@ -32,8 +32,10 @@ services:
       POSTGRES_USER: {{ values.get('postgres', {}).get('user', 'postgres') }}
       POSTGRES_PASSWORD: {{ values.get('postgres', {}).get('password', 'postgres') }}
       POSTGRES_DB: {{ values.get('postgres', {}).get('db', 'app_db') }}
+{% if values.get('postgres', {}).get('expose_port', false) %}
     ports:
       - "{{ values.get('postgres', {}).get('port', 5432) }}:5432"
+{% endif %}
 {% endif %}
 
 {% if has_plugin.get("jupyter") %}
@@ -66,8 +68,10 @@ services:
 {% if has_plugin.get("redis") %}
   redis:
     image: redis:7
+{% if values.get('redis', {}).get('expose_port', false) %}
     ports:
       - "{{ values.get('redis', {}).get('port', 6379) }}:6379"
+{% endif %}
 {% endif %}
 
 {% if has_plugin.get("celery") %}

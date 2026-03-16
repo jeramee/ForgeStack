@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Object Model](object-model.md) | [Next: Stack Format](stack-format.md)  
+> **Related:** [CLI](cli.md)
+
 # Presets and Projects
 
 ForgeStack separates reusable preset definitions from concrete project instances.
@@ -396,3 +402,9 @@ That means:
 - output stays generated
 
 This rule is one of the main protections against drifting back into mixed, hard-to-scale configuration files.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Object Model](object-model.md) | [Next: Stack Format](stack-format.md)  
+**Related:** [CLI](cli.md)

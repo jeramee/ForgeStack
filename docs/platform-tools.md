@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Hardware Strategy](hardware-strategy.md) | [Next: Devdata / Devview Boundaries](devdata-devview-boundaries.md)  
+> **Related:** [Roadmap](roadmap.md)
+
 # Platform Tools
 
 ForgeStack should be understood as a **platform**, not just a single CLI.
@@ -335,3 +341,9 @@ For now, that means:
 ### ForgeStack = platform  
 ### `devmake` = active tool  
 ### future tools = planned expansion, not current standalone public tools
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Hardware Strategy](hardware-strategy.md) | [Next: Devdata / Devview Boundaries](devdata-devview-boundaries.md)  
+**Related:** [Roadmap](roadmap.md)

@@ -7,6 +7,7 @@ from forgestack.core.plan_executor import execute_plan
 
 
 def test_generated_sqlite_vertical_slice(tmp_path):
+
     raw_doc = load_stack_yaml("projects/LocalWorkflowApp.yaml")
     effective_doc = resolve_document(raw_doc)
     plugin_names = get_plugin_names(effective_doc)
@@ -23,6 +24,9 @@ def test_generated_sqlite_vertical_slice(tmp_path):
     app_config = (output_root / "backend" / "app_config.py").read_text(encoding="utf-8")
     db_py = (output_root / "backend" / "db.py").read_text(encoding="utf-8")
     compose = (output_root / "docker-compose.yml").read_text(encoding="utf-8")
+
+    env_example = (output_root / ".env.example").read_text(encoding="utf-8")
+    readme = (output_root / "README.md").read_text(encoding="utf-8")
 
     assert "from db import get_connection, init_db" in backend_main
     assert '@app.get("/items")' in backend_main
@@ -44,3 +48,10 @@ def test_generated_sqlite_vertical_slice(tmp_path):
     assert "postgres:" not in compose
     assert "redis:" not in compose
     assert "celery:" not in compose
+
+    assert "POSTGRES_" not in env_example
+    assert "REDIS_" not in env_example
+
+    assert "- Database: SQLite" in readme
+    assert "- Cache/Queue: Redis" not in readme
+    assert "- Worker: Celery" not in readme

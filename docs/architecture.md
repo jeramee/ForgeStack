@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Current Architecture](current-architecture.md) | [Next: CLI](cli.md)  
+> **Related:** [Object Model](object-model.md)
+
 # Architecture
 
 This document describes the **current implemented architecture** of ForgeStack.
@@ -89,25 +95,27 @@ The current generation path looks like this:
 
 ```text
 project file
-  ↓
+  ->
 load YAML
-  ↓
+  ->
 resolve stack/app presets
-  ↓
+  ->
 build render context
-  ↓
+  ->
 discover plugins
-  ↓
+  ->
 build dependency graph
-  ↓
+  ->
 create execution plan
-  ↓
+  ->
 apply plan into output/
 ```
 
+In the current repo, this public flow is anchored to `cli/main.py`, `stack_loader.py`, `preset_resolver.py`, `registry.py`, `planner.py`, and `plan_executor.py`.
+
 This means ForgeStack now has a real resolution step before planning and apply.
 
-It is no longer just “read plugin names from one file and render a few templates.”
+It is no longer just "read plugin names from one file and render a few templates."
 
 ---
 
@@ -304,15 +312,15 @@ The graph determines:
 
 ```text
 requested or resolved plugins
-  ↓
+  ->
 dependency expansion
-  ↓
+  ->
 graph build
-  ↓
+  ->
 topological ordering
-  ↓
+  ->
 plugin planning hooks
-  ↓
+  ->
 plan actions
 ```
 
@@ -493,3 +501,9 @@ That means:
 - output remains the generated result
 
 ForgeStack should continue growing from this structure instead of slipping back into mixed, hard-to-scale configuration patterns.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Current Architecture](current-architecture.md) | [Next: CLI](cli.md)  
+**Related:** [Object Model](object-model.md)

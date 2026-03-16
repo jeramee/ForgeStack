@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Product Strategy](product-strategy.md) | [Next: Hardware Strategy](hardware-strategy.md)  
+> **Related:** [Platform Tools](platform-tools.md)
+
 # Data Science Strategy
 
 Data science is one of the strongest near-term strategic lanes for ForgeStack.
@@ -317,3 +323,9 @@ ForgeStack should treat data science as a strong practical product lane built on
 - output
 
 That means the platform should expand into data-science and technician workflows **through presets and plugins**, not by bending the core model into something special-case and brittle.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Product Strategy](product-strategy.md) | [Next: Hardware Strategy](hardware-strategy.md)  
+**Related:** [Platform Tools](platform-tools.md)

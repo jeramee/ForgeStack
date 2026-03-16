@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Lean Core Principles](lean-core-principles.md) | [Next: Data Science Strategy](data-science-strategy.md)  
+> **Related:** [Roadmap](roadmap.md)
+
 # Product Strategy
 
 ForgeStack should be developed in clear phases that match both its current implementation reality and its longer-term platform direction.
@@ -277,3 +283,9 @@ That means:
 - v2.0 is about platform breadth
 
 That sequence is what gives the product a believable path from useful tool to broader system.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Lean Core Principles](lean-core-principles.md) | [Next: Data Science Strategy](data-science-strategy.md)  
+**Related:** [Roadmap](roadmap.md)

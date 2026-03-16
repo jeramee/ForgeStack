@@ -1,3 +1,9 @@
+# NOTE:
+# This plugin API supports both legacy plugin planning and a richer parallel
+# composition path. The current authoritative public `devmake apply` path uses
+# simple plugin `plan(ctx)` behavior through `forgestack/core/planner.py`.
+# Keep new public apply behavior out of the richer `contribute()` / PlanAction
+# path unless intentionally migrating the active public path.
 # forgestack/core/plugin_api.py
 
 from __future__ import annotations

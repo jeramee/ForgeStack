@@ -24,6 +24,10 @@ def test_generated_jupyter_vertical_slice(tmp_path):
     frontend_app = (output_root / "frontend" / "src" / "App.jsx").read_text(encoding="utf-8")
     notebooks_readme = (output_root / "notebooks" / "README.md").read_text(encoding="utf-8")
 
+    env_example = (output_root / ".env.example").read_text(encoding="utf-8")
+    readme = (output_root / "README.md").read_text(encoding="utf-8")
+
+
     assert '"project_name": "DataWorkbenchApp"' in app_config
     assert '"app_name": "data-workbench"' in app_config
     assert '"jupyter": {' in app_config
@@ -40,3 +44,12 @@ def test_generated_jupyter_vertical_slice(tmp_path):
     assert "Open Jupyter Workspace" in frontend_app
 
     assert "# Notebooks" in notebooks_readme
+
+    assert "JUPYTER_PORT=8888" in env_example
+    assert "POSTGRES_" not in env_example
+    assert "REDIS_" not in env_example
+
+    assert "- Notebook Workspace: Jupyter" in readme
+    assert "- Database: SQLite" in readme
+    assert "- Cache/Queue: Redis" not in readme
+    assert "- Worker: Celery" not in readme

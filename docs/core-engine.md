@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Next: Graph Engine](graph-engine.md)  
+> **Related:** [Current Architecture](current-architecture.md)
+
 # Core Engine
 
 ## Purpose
@@ -58,21 +64,23 @@ At a high level, ForgeStack now works like this:
 
 ```text
 project file
-  ↓
-preset resolution
-  ↓
+  ->
+load + resolve
+  ->
 render context
-  ↓
+  ->
 plugin discovery
-  ↓
+  ->
 dependency graph
-  ↓
-execution plan
-  ↓
-apply executor
-  ↓
+  ->
+plan creation
+  ->
+plan execution
+  ->
 output/
 ```
+
+In the current repo, this flow is implemented through the active `devmake` path in `cli/main.py`, `stack_loader.py`, `preset_resolver.py`, `registry.py`, `planner.py`, and `plan_executor.py`.
 
 This makes the core the part of the platform that translates a project definition into a coordinated generation process.
 
@@ -101,7 +109,7 @@ Concrete instance that selects stack + app + overrides.
 ### Output
 Rendered filesystem result.
 
-The core’s job is not to redefine these objects, but to coordinate the path from project input to generated output.
+The core's job is not to redefine these objects, but to coordinate the path from project input to generated output.
 
 ---
 
@@ -202,3 +210,9 @@ It should preserve:
 - the graph-first mindset
 - plugin-driven expansion
 - clear separation between user-facing concepts and internal generation mechanics
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Next: Graph Engine](graph-engine.md)  
+**Related:** [Current Architecture](current-architecture.md)

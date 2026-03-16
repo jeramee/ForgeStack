@@ -1,3 +1,8 @@
+# NOTE:
+# This executor is not the current authoritative public apply path.
+# The active public `devmake apply` path uses `forgestack/core/plan_executor.py`.
+# Keep new public apply behavior out of this module unless intentionally migrating.
+
 from __future__ import annotations
 
 import re

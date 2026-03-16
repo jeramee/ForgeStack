@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Core Engine](core-engine.md) | [Next: Planner](planner.md)  
+> **Related:** [Plugin System](plugin-system.md)
+
 # Graph Engine
 
 ## Purpose
@@ -166,3 +172,9 @@ The dependency graph should remain:
 - central to ordering and diagnostics
 
 It should not be reduced to a decorative feature or hidden implementation detail.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Core Engine](core-engine.md) | [Next: Planner](planner.md)  
+**Related:** [Plugin System](plugin-system.md)

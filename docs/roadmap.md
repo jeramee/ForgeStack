@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: CLI](cli.md)  
+> **Related:** [Product Strategy](product-strategy.md)
+
 # Roadmap
 
 This roadmap reflects the current ForgeStack direction.
@@ -17,6 +23,16 @@ The roadmap should follow a few rules:
 - keep the core small
 - add new lanes in deliberate waves
 - distinguish clearly between now, near future, and future future
+
+---
+
+## Related Planning Docs
+
+- [Product Strategy](product-strategy.md)
+- [Platform Tools](platform-tools.md)
+- [Data Science Strategy](data-science-strategy.md)
+- [Hardware Strategy](hardware-strategy.md)
+- [Devdata / Devview Boundaries](devdata-devview-boundaries.md)
 
 ---
 
@@ -275,3 +291,9 @@ Workflow, technician, data, and lightweight-local expansion.
 Broader platform and hub-oriented expansion.
 
 The roadmap should keep ForgeStack grounded in what is already real while making room for the stronger broader platform that can grow from the same foundation.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: CLI](cli.md)  
+**Related:** [Product Strategy](product-strategy.md)

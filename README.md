@@ -54,7 +54,7 @@ Implemented v1.5 lanes now also include:
 - SQLite-backed local workflow apps
 - technician console / mobile-responsive operational UI
 - Jupyter workspace lane
-- Voilà notebook-view bridge
+- Voila notebook-view bridge
 - structured workflow / Kedro scaffold
 - Arduino-first device bridge scaffold
 
@@ -323,54 +323,43 @@ Those future lanes are important, but the current priority is keeping the core m
 
 ---
 
-## Platform and Tooling Direction
-
-ForgeStack is the **platform**.
-
-`devmake` is the current active **tool** inside that platform.
-
-Planned future ForgeStack tool families may include:
-
-- `devdata`
-- `devview`
-- `devhub`
-- `devai`
-- `devpkg`
-
-For now, development is centered on the core ForgeStack repository and the `devmake` generation path.
-
----
-
 ## Documentation
 
-### Start here
+### Start Here
 - [Introduction](docs/introduction.md)
 - [Docs Overview](docs/README_docs_overview.md)
 - [Current Architecture](docs/current-architecture.md)
+- [Architecture](docs/architecture.md)
 - [CLI](docs/cli.md)
 - [Roadmap](docs/roadmap.md)
 
-### Core model
+### Core Model
 - [Object Model](docs/object-model.md)
 - [Presets and Projects](docs/presets-and-projects.md)
+- [Stack Format](docs/stack-format.md)
 - [Plugin System](docs/plugin-system.md)
 
-### Engine internals
+### Engine Internals
 - [Core Engine](docs/core-engine.md)
 - [Graph Engine](docs/graph-engine.md)
 - [Planner](docs/planner.md)
 - [Executor](docs/executor.md)
 - [Validation and State](docs/validation-and-state.md)
-- [Machine Readable Output](docs/machine-readable-output.md)
+- [Machine-Readable Output](docs/machine-readable-output.md)
 
-### Strategy and design
+### Strategy and Direction
 - [Lean Core Principles](docs/lean-core-principles.md)
 - [Product Strategy](docs/product-strategy.md)
 - [Data Science Strategy](docs/data-science-strategy.md)
 - [Hardware Strategy](docs/hardware-strategy.md)
 - [Platform Tools](docs/platform-tools.md)
+- [Devdata / Devview Boundaries](docs/devdata-devview-boundaries.md)
 
-### Extended design notes
+### Project and Contribution
+- [Contributing](docs/contributing.md)
+- [Internal Module Status](docs/internal-module-status.md)
+
+### Extended Maintainer Notes
 - [ForgeStack Architecture Spec](docs/forgestack_architecture_spec.md)
 
 ---

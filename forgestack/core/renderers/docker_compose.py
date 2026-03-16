@@ -13,25 +13,33 @@ class DockerComposeRenderer:
 
         for name, service in model.services.items():
             spec: dict = {}
-            if service.image:
+
+            # Preferred stable output order
+            if getattr(service, "image", None):
                 spec["image"] = service.image
-            if service.build_context:
+            if getattr(service, "build_context", None):
                 spec["build"] = service.build_context
-            if service.command:
-                spec["command"] = service.command
-            if service.ports:
-                spec["ports"] = service.ports
-            if service.env:
-                spec["environment"] = service.env
-            if service.depends_on:
-                spec["depends_on"] = service.depends_on
-            if service.volumes:
+            if getattr(service, "working_dir", None):
+                spec["working_dir"] = service.working_dir
+            if getattr(service, "volumes", None):
                 spec["volumes"] = service.volumes
                 for vol in service.volumes:
                     if ":" in vol:
                         vol_name = vol.split(":", 1)[0]
-                        if "/" not in vol_name and "\\" not in vol_name and not vol_name.startswith("."):
+                        if (
+                            "/" not in vol_name
+                            and "\\" not in vol_name
+                            and not vol_name.startswith(".")
+                        ):
                             volumes[vol_name] = {}
+            if getattr(service, "ports", None):
+                spec["ports"] = service.ports
+            if getattr(service, "env", None):
+                spec["environment"] = service.env
+            if getattr(service, "command", None):
+                spec["command"] = service.command
+            if getattr(service, "depends_on", None):
+                spec["depends_on"] = service.depends_on
 
             compose["services"][name] = spec
 
@@ -39,4 +47,11 @@ class DockerComposeRenderer:
             compose["volumes"] = volumes
 
         out = Path(root) / "docker-compose.yml"
-        out.write_text(yaml.safe_dump(compose, sort_keys=False), encoding="utf-8")
+        out.write_text(
+            yaml.safe_dump(
+                compose,
+                sort_keys=False,
+                default_flow_style=False,
+            ),
+            encoding="utf-8",
+        )

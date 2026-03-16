@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Docs Overview](README_docs_overview.md) | [Next: Architecture](architecture.md)  
+> **Related:** [Core Engine](core-engine.md)
+
 # Current Architecture
 
 This document describes the **current implemented direction** of ForgeStack.
@@ -108,7 +114,28 @@ The architecture should support this flow cleanly and explicitly.
 
 ## Resolution Pipeline
 
-The current generation path follows a layered resolution process.
+The active public generation path currently follows this sequence:
+
+```text
+forgestack/cli/main.py
+  ->
+load_stack_yaml()
+  ->
+resolve_document()
+  ->
+_build_render_context()
+  ->
+PluginRegistry.discover()
+  ->
+create_plan()
+  ->
+execute_plan()
+  ->
+output/
+```
+
+In the current repo, this flow is implemented through the active `devmake` path in `cli/main.py`, `stack_loader.py`, `preset_resolver.py`, `registry.py`, `planner.py`, and `plan_executor.py`.
+
 
 ### Input layers
 
@@ -125,23 +152,23 @@ The current generation path follows a layered resolution process.
 
 ```text
 project file
-  ↓
+  ->
 load YAML
-  ↓
+  ->
 resolve project through stack/app presets
-  ↓
+  ->
 build render context
-  ↓
+  ->
 discover plugins
-  ↓
+  ->
 build dependency graph
-  ↓
+  ->
 create execution plan
-  ↓
+  ->
 apply plan into output/
 ```
 
-This means project generation is no longer just “read plugins from one YAML file and write templates.” It now includes a real resolution step.
+This means project generation is no longer just "read plugins from one YAML file and write templates." It now includes a real resolution step.
 
 ---
 
@@ -245,18 +272,17 @@ The graph determines:
 
 ```text
 requested or resolved plugins
-  ↓
+  ->
 dependency expansion
-  ↓
+  ->
 graph build
-  ↓
+  ->
 topological ordering
-  ↓
+  ->
 plugin planning hooks
-  ↓
+  ->
 plan actions
 ```
-
 This is still one of the core strengths of ForgeStack.
 
 ---
@@ -359,7 +385,7 @@ This is the key current architectural milestone.
 
 ## Current Milestone Direction
 
-The project has been moving through an application-skeleton phase in which generation is no longer judged only by “did files get written,” but by “did a coherent runnable starter app get produced.”
+The project has been moving through an application-skeleton phase in which generation is no longer judged only by "did files get written," but by "did a coherent runnable starter app get produced."
 
 That means the current architecture should support:
 
@@ -433,3 +459,9 @@ That means:
 - output remains the generated result
 
 ForgeStack should continue to grow from this structure rather than slipping back into mixed, hard-to-scale configuration patterns.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Docs Overview](README_docs_overview.md) | [Next: Architecture](architecture.md)  
+**Related:** [Core Engine](core-engine.md)

@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Data Science Strategy](data-science-strategy.md) | [Next: Platform Tools](platform-tools.md)  
+> **Related:** [Platform Tools](platform-tools.md)
+
 # Hardware Strategy
 
 Hardware and device-oriented generation is an important future direction for ForgeStack, but it should be introduced in a staged and realistic way.
@@ -266,3 +272,9 @@ When hardware support arrives, it should arrive through the same stable structur
 - app
 - project
 - output
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Data Science Strategy](data-science-strategy.md) | [Next: Platform Tools](platform-tools.md)  
+**Related:** [Platform Tools](platform-tools.md)

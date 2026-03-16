@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Planner](planner.md) | [Next: Validation and State](validation-and-state.md)  
+> **Related:** [Current Architecture](current-architecture.md)
+
 # Executor
 
 ## Purpose
@@ -57,13 +63,13 @@ At a high level:
 
 ```text
 resolved project
-  ↓
+  ->
 planner
-  ↓
+  ->
 plan
-  ↓
+  ->
 executor
-  ↓
+  ->
 output/
 ```
 
@@ -80,7 +86,7 @@ That separation is one of the most important architectural rules in ForgeStack.
 
 ForgeStack is growing toward richer generated systems.
 
-That can create a temptation to put more “intelligence” into the executor.
+That can create a temptation to put more "intelligence" into the executor.
 
 That would be a mistake.
 
@@ -174,3 +180,9 @@ The executor should remain the apply layer of ForgeStack:
 - execution does not redefine meaning
 
 That is what keeps apply trustworthy.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Planner](planner.md) | [Next: Validation and State](validation-and-state.md)  
+**Related:** [Current Architecture](current-architecture.md)

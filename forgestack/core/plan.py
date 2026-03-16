@@ -1,3 +1,9 @@
+# NOTE:
+# This plan model supports a richer parallel planning path and is not the
+# current authoritative public plan used by `devmake apply`.
+# The active public path currently uses `forgestack/core/planner.py`
+# together with `forgestack/core/plan_executor.py`.
+# Keep new public behavior out of this module unless intentionally migrating.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field

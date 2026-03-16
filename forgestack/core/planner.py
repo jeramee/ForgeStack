@@ -1,3 +1,6 @@
+# Active public planner for `devmake plan` / `devmake apply`.
+# Public generation behavior should be improved here in place unless there is an
+# intentional migration away from this path.
 import threading
 from .resolver import build_dependency_graph
 from .dag_executor import execute_dag

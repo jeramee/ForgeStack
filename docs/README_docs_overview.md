@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Introduction](introduction.md) | [Next: Current Architecture](current-architecture.md)  
+> **Related:** [Architecture](architecture.md)
+
 # ForgeStack Documentation Overview
 
 This documentation set reflects the current ForgeStack direction.
@@ -27,122 +33,6 @@ If you are thinking about future positioning, tool-family growth, or roadmap pla
 
 ---
 
-## Start Here
-
-### 1. Introduction
-- [Introduction](introduction.md)
-
-High-level explanation of what ForgeStack is, what problem it solves, and how it is currently meant to be used.
-
-### 2. Current Architecture
-- [Current Architecture](current-architecture.md)
-
-A practical description of the current implemented direction:
-- presets
-- projects
-- output
-- plugin planning
-- generated full-stack starter apps
-- current runtime milestones
-
-### 3. CLI
-- [CLI](cli.md)
-
-Current command surface for `devmake`, including:
-- preset discovery
-- project creation
-- graph
-- plan
-- apply
-
-### 4. Object Model
-- [Object Model](object-model.md)
-- [Presets and Projects](presets-and-projects.md)
-
-The canonical model for:
-- stack presets
-- app presets
-- project objects
-- output artifacts
-- overrides
-
----
-
-## Core Engine and Internals
-
-These documents describe how ForgeStack works internally.
-
-- [Core Engine](core-engine.md)
-- [Graph Engine](graph-engine.md)
-- [Planner](planner.md)
-- [Executor](executor.md)
-- [Validation and State](validation-and-state.md)
-- [Machine Readable Output](machine-readable-output.md)
-- [Plugin System](plugin-system.md)
-
-Use these when working on:
-- plugin planning
-- dependency resolution
-- template rendering
-- apply execution
-- validation rules
-- future extensibility
-
----
-
-## Strategy and Product Direction
-
-These documents explain where ForgeStack is going, without changing the locked core model.
-
-- [Product Strategy](product-strategy.md)
-- [Data Science Strategy](data-science-strategy.md)
-- [Hardware Strategy](hardware-strategy.md)
-- [Roadmap](roadmap.md)
-- [Platform Tools](platform-tools.md)
-
-These are useful for understanding:
-- near-term priorities
-- 1.0 / 1.5 / 2.0 direction
-- stronger data-science / technician wedge
-- future hub-oriented expansion
-- planned ForgeStack tool families beyond `devmake`
-
----
-
-## Extended Design Notes
-
-- [ForgeStack Architecture Spec](forgestack_architecture_spec.md)
-
-This contains deeper internal architecture discussion and broader structural thinking for maintainers.
-
----
-
-## Recommended Reading Order
-
-### For new users
-1. [Introduction](introduction.md)
-2. [CLI](cli.md)
-3. [Object Model](object-model.md)
-4. [Presets and Projects](presets-and-projects.md)
-5. [Current Architecture](current-architecture.md)
-
-### For contributors
-1. [Introduction](introduction.md)
-2. [Current Architecture](current-architecture.md)
-3. [Plugin System](plugin-system.md)
-4. [Planner](planner.md)
-5. [Executor](executor.md)
-6. [Validation and State](validation-and-state.md)
-
-### For strategy and roadmap planning
-1. [Product Strategy](product-strategy.md)
-2. [Roadmap](roadmap.md)
-3. [Data Science Strategy](data-science-strategy.md)
-4. [Hardware Strategy](hardware-strategy.md)
-5. [Platform Tools](platform-tools.md)
-
----
-
 ## Current Documentation Direction
 
 ForgeStack documentation should reflect the current canonical project model, not the older mixed stack-only format.
@@ -158,3 +48,9 @@ That means documentation should consistently reflect:
 - the current connected generated full-stack app path
 
 As the platform expands, future docs may describe additional tools, workflows, and product lanes, but those should build on top of the same core model rather than replace it.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Introduction](introduction.md) | [Next: Current Architecture](current-architecture.md)  
+**Related:** [Architecture](architecture.md)

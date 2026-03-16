@@ -1,3 +1,10 @@
+# NOTE:
+# This module is part of a richer parallel composition path that is not the
+# current authoritative public `devmake apply` path.
+# Public generation behavior currently flows through:
+# cli/main.py -> stack_loader.py -> preset_resolver.py -> registry.py
+# -> planner.py -> plan_executor.py
+# Keep new public apply behavior out of this module unless intentionally migrating.
 from __future__ import annotations
 
 from .models import FileSpec, PluginContribution, StackModel, TaskSpec

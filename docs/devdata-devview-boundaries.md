@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Platform Tools](platform-tools.md)  
+> **Related:** [Platform Tools](platform-tools.md)
+
 # devdata / devview Boundaries
 
 This document defines the boundary between the future **`devdata`** and **`devview`** tool lanes inside ForgeStack.
@@ -339,3 +345,9 @@ After this milestone, ForgeStack should be understood as follows:
 - **`devview`** = reserved future lane for operational surfaces/published views/browser-facing presentation concerns
 
 Implementation remains in the main ForgeStack repo until later maturity justifies a stronger split.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Platform Tools](platform-tools.md)  
+**Related:** [Platform Tools](platform-tools.md)

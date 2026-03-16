@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Stack Format](stack-format.md)  
+> **Related:** [Core Engine](core-engine.md)
+
 # Plugin System
 
 ## Purpose
@@ -191,3 +197,9 @@ The plugin system should preserve one central principle:
 **plugins extend ForgeStack by declaring generation behavior inside the shared object model, graph, planner, and executor architecture.**
 
 That means the plugin system should help the platform grow without turning the core into a mess.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Stack Format](stack-format.md)  
+**Related:** [Core Engine](core-engine.md)

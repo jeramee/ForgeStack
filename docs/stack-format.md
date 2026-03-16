@@ -1,3 +1,9 @@
+<a id="top"></a>
+
+> **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+> **Section:** [Prev: Presets and Projects](presets-and-projects.md) | [Next: Plugin System](plugin-system.md)  
+> **Related:** [Current Architecture](current-architecture.md)
+
 # Stack Format
 
 The older stack-only format is no longer the main ForgeStack model.
@@ -84,3 +90,9 @@ The older stack-only explanation has been superseded by these documents:
 - [Architecture](architecture.md)
 
 These documents reflect the current ForgeStack direction.
+
+---
+
+**Navigation:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
+**Section:** [Prev: Presets and Projects](presets-and-projects.md) | [Next: Plugin System](plugin-system.md)  
+**Related:** [Current Architecture](current-architecture.md)
