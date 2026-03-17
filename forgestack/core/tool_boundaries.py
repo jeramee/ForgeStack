@@ -21,6 +21,11 @@ TOOL_BOUNDARIES = {
             "standalone operational view/publishing product lane",
         ],
     },
+    
+    # Minimal placeholders for reserved future lanes
+    "devdata": {"active": False, "maturity": "reserved"},
+    "devview": {"active": False, "maturity": "reserved"},
+
     "devdata": {
         "active": False,
         "maturity": "reserved",
