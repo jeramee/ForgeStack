@@ -10,7 +10,7 @@ class RedisPlugin(Plugin):
 
         ctx.plan.create_file(
             "docker/redis.yml",
-            template="docker/redis.yml"
+            template="redis/docker/redis.yml"
         )
 
 
