@@ -137,6 +137,7 @@ private/
 private_*/
 private-*/
 *private/
+*private*/
 *_private/
 *_private.py
 *_private.ps1
@@ -203,3 +204,4 @@ products/
 widgets/
 FLATTENED_CODE.txt
 tree.txt
+check_braces.py

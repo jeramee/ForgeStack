@@ -14,7 +14,7 @@ services:
     volumes:
       - ./backend:/app
     ports:
-      - "8000:8000"
+      - "{{ values.get('fastapi', {}).get('port', 8000) }}:{{ values.get('fastapi', {}).get('port', 8000) }}"
 {% if has_plugin.get("postgres") or has_plugin.get("redis") %}
     depends_on:
 {% if has_plugin.get("postgres") %}

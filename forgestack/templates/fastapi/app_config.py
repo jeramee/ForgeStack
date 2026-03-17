@@ -21,6 +21,13 @@ APP_CONFIG = {
     },
 {% endif %}
 
+{% if has_plugin.get("fastapi") %}
+    "fastapi": {
+        "enabled": True,
+        "port": {{ values.get('fastapi', {}).get('port', 8000) }},
+    },
+{% endif %}
+
 {% if has_plugin.get("jupyter") %}
     "jupyter": {
         "enabled": True,
@@ -60,6 +67,13 @@ APP_CONFIG = {
     "sqlite": {
         "enabled": {{ "True" if has_plugin.get("sqlite") else "False" }},
         "database": "{{ values.get('sqlite', {}).get('database', 'app.db') }}",
+    },
+{% endif %}
+
+{% if has_plugin.get("fastapi") %}
+    "fastapi": {
+        "enabled": True,
+        "port": {{ values.get('fastapi', {}).get('port', 8000) }},
     },
 {% endif %}
 }
