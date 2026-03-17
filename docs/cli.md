@@ -308,22 +308,6 @@ It should not be documented as if older or future commands are already the activ
 
 ---
 
-## Future CLI Expansion
-
-ForgeStack may later grow into a broader tool family, with `devmake` remaining the current active generator CLI.
-
-Possible future platform tools may include:
-
-- `devdata`
-- `devview`
-- `devhub`
-- `devai`
-- `devpkg`
-
-Those are platform-level future directions. They should not replace the current documented `devmake` workflow.
-
----
-
 ## Design Rule
 
 The CLI should stay aligned with the canonical object model:

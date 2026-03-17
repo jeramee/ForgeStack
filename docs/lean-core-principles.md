@@ -1,7 +1,7 @@
 <a id="top"></a>
 
 > **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
-> **Section:** [Next: Product Strategy](product-strategy.md)  
+> **Section:** [Next: Data Science Strategy](data-science-strategy.md)  
 > **Related:** [Core Engine](core-engine.md)
 
 # Lean Core Principles

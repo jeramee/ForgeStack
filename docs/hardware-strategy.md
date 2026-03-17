@@ -1,8 +1,8 @@
 <a id="top"></a>
 
 > **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
-> **Section:** [Prev: Data Science Strategy](data-science-strategy.md) | [Next: Platform Tools](platform-tools.md)  
-> **Related:** [Platform Tools](platform-tools.md)
+> **Section:** [Prev: Data Science Strategy](data-science-strategy.md) | [Next: Tools](tools.md)  
+> **Related:** [Core Engine](docs/core-engine.md)
 
 # Hardware Strategy
 

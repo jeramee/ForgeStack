@@ -109,13 +109,37 @@ forgestack/
 
 This is a representative repository shape, not a complete live inventory of every current preset.
 
-### Meaning
+## Meaning
 
 - `presets/stack/` contains reusable technical presets
 - `presets/app/` contains reusable product or archetype presets
 - `projects/` contains concrete project definitions
 - `output/` contains generated results
 - `forgestack/templates/` contains internal render templates, not user-facing presets
+
+## Current CLI
+
+ForgeStack currently uses `devmake` as the active CLI.
+
+Supported command family:
+
+```
+devmake plugins
+devmake presets list
+devmake graph projects/MyApp.yaml
+devmake plan projects/MyApp.yaml
+devmake apply projects/MyApp.yaml
+devmake create project MyApp --stack web-stack --app finance-dashboard
+```
+
+## Recommended near-term flow
+
+```
+devmake presets list
+devmake create project MyApp --stack web-stack --app finance-dashboard
+devmake plan projects/MyApp.yaml
+devmake apply projects/MyApp.yaml
+```
 
 ---
 
@@ -163,31 +187,31 @@ python -m pip install -e .
 
 ### 3. List available presets
 
-```powershell
+```
 devmake presets list
 ```
 
 ### 4. Create a project
 
-```powershell
+```
 devmake create project MyApp --stack web-stack --app finance-dashboard
 ```
 
 ### 5. Preview the dependency graph
 
-```powershell
+```
 devmake graph projects/MyApp.yaml
 ```
 
 ### 6. Preview the execution plan
 
-```powershell
+```
 devmake plan projects/MyApp.yaml
 ```
 
 ### 7. Generate the project
 
-```powershell
+```
 devmake apply projects/MyApp.yaml
 ```
 
@@ -204,18 +228,14 @@ docker compose up --build
 
 Example `projects/MyApp.yaml`:
 
-```yaml
-kind: project
-name: MyApp
-uses:
-  stack: web-stack
-  app: finance-dashboard
-overrides: {}
-```
+`kind: project`
+`name: MyApp`
+`uses:`
+`  stack: web-stack`
+`  app: finance-dashboard`
+`overrides: {}`
 
 This project definition points to reusable presets instead of mixing all concerns into one document.
-
----
 
 ## Generated Output Direction
 
@@ -223,7 +243,6 @@ ForgeStack now aims to generate more than placeholder files.
 
 A generated full-stack starter app may include:
 
-```text
 output/MyApp/
   backend/
     main.py
@@ -250,7 +269,6 @@ output/MyApp/
   README.md
   .env.example
   .gitignore
-```
 
 The current generated application skeleton is moving toward a true vertical slice:
 
@@ -259,8 +277,6 @@ The current generated application skeleton is moving toward a true vertical slic
 - backend returns project config
 - backend queues a background task
 - frontend can display results from that flow
-
----
 
 ## Core Design Direction
 
@@ -281,8 +297,6 @@ This improves:
 - long-term scalability
 - future tooling expansion
 
----
-
 ## Why ForgeStack
 
 Modern systems require many pieces to be wired together correctly:
@@ -299,8 +313,6 @@ Modern systems require many pieces to be wired together correctly:
 ForgeStack automates that wiring through a dependency-aware plugin system.
 
 The goal is not just to scaffold files, but to generate a connected development starting point that matches a chosen stack and app shape.
-
----
 
 ## Current Product Direction
 
@@ -321,48 +333,48 @@ Longer term, the same platform may support:
 
 Those future lanes are important, but the current priority is keeping the core model and generation path stable.
 
----
-
 ## Documentation
 
 ### Start Here
-- [Introduction](docs/introduction.md)
-- [Docs Overview](docs/README_docs_overview.md)
-- [Current Architecture](docs/current-architecture.md)
-- [Architecture](docs/architecture.md)
-- [CLI](docs/cli.md)
-- [Roadmap](docs/roadmap.md)
+
+- Introduction
+- Docs Overview
+- Current Architecture
+- Architecture
+- CLI
+- Roadmap
 
 ### Core Model
-- [Object Model](docs/object-model.md)
-- [Presets and Projects](docs/presets-and-projects.md)
-- [Stack Format](docs/stack-format.md)
-- [Plugin System](docs/plugin-system.md)
+
+- Object Model
+- Presets and Projects
+- Stack Format
+- Plugin System
 
 ### Engine Internals
-- [Core Engine](docs/core-engine.md)
-- [Graph Engine](docs/graph-engine.md)
-- [Planner](docs/planner.md)
-- [Executor](docs/executor.md)
-- [Validation and State](docs/validation-and-state.md)
-- [Machine-Readable Output](docs/machine-readable-output.md)
+
+- Core Engine
+- Graph Engine
+- Planner
+- Executor
+- Validation and State
+- Machine-Readable Output
 
 ### Strategy and Direction
-- [Lean Core Principles](docs/lean-core-principles.md)
-- [Product Strategy](docs/product-strategy.md)
-- [Data Science Strategy](docs/data-science-strategy.md)
-- [Hardware Strategy](docs/hardware-strategy.md)
-- [Platform Tools](docs/platform-tools.md)
-- [Devdata / Devview Boundaries](docs/devdata-devview-boundaries.md)
+
+- Lean Core Principles
+- Data Science Strategy
+- Hardware Strategy
+- Tools
 
 ### Project and Contribution
-- [Contributing](docs/contributing.md)
-- [Internal Module Status](docs/internal-module-status.md)
+
+- Contributing
+- Internal Module Status
 
 ### Extended Maintainer Notes
-- [ForgeStack Architecture Spec](docs/forgestack_architecture_spec.md)
 
----
+- ForgeStack Architecture Spec
 
 ## Contributing
 
@@ -378,9 +390,7 @@ ForgeStack is still evolving, and contributions should preserve a few core rules
   - project
   - output
 
-See [Contributing](docs/contributing.md).
-
----
+See Contributing.
 
 ## License
 

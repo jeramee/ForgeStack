@@ -1,7 +1,7 @@
 <a id="top"></a>
 
 > **Docs:** [README](../README.md) | [Docs Overview](README_docs_overview.md) | [Back to Top](#top)  
-> **Section:** [Prev: Product Strategy](product-strategy.md) | [Next: Hardware Strategy](hardware-strategy.md)  
+> **Section:** [Prev: Lean Core Principles](lean-core-principles.md) | [Next: Hardware Strategy](hardware-strategy.md)  
 > **Related:** [Platform Tools](platform-tools.md)
 
 # Data Science Strategy
