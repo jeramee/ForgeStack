@@ -22,7 +22,7 @@ def test_plan_uses_canonical_template_ids():
     assert "react/package.json" in templates
     assert "python/requirements.txt" in templates
     assert "docker/postgres.yml" in templates
-    assert "docker/redis.yml" in templates
+    assert "redis/docker/redis.yml" in templates
     assert "celery/app.py" in templates
     assert "celery/tasks.py" in templates
     assert "docker/celery.yml" in templates
