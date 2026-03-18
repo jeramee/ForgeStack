@@ -3,7 +3,7 @@ from forgestack.core.template_loader import render_template_text
 
 def test_generated_react_app_template_targets_vertical_slice_endpoints():
     rendered = render_template_text(
-        "react/src/App.jsx",
+        "react/src/generated/AppShell.jsx",
         {
             "project_name": "MyApp",
             "features": {"charts": True, "auth": False},
@@ -22,7 +22,7 @@ def test_generated_react_app_template_targets_vertical_slice_endpoints():
 
 def test_generated_react_app_template_displays_project_stack_app_and_features():
     rendered = render_template_text(
-        "react/src/App.jsx",
+        "react/src/generated/AppShell.jsx",
         {
             "project_name": "MyApp",
             "features": {"charts": True, "filters": True},

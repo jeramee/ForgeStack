@@ -21,7 +21,7 @@ def test_generated_jupyter_vertical_slice(tmp_path):
 
     app_config = (output_root / "backend" / "app_config.py").read_text(encoding="utf-8")
     compose = (output_root / "docker-compose.yml").read_text(encoding="utf-8")
-    frontend_app = (output_root / "frontend" / "src" / "App.jsx").read_text(encoding="utf-8")
+    frontend_shell = (output_root / "frontend" / "src" / "generated" / "AppShell.jsx").read_text(encoding="utf-8")
     notebooks_readme = (output_root / "notebooks" / "README.md").read_text(encoding="utf-8")
 
     env_example = (output_root / ".env.example").read_text(encoding="utf-8")
@@ -38,10 +38,10 @@ def test_generated_jupyter_vertical_slice(tmp_path):
     assert "jupyter/base-notebook:python-3.11" in compose
     assert '"8888:8888"' in compose
 
-    assert "Data Workbench" in frontend_app
-    assert "Notebook Workspace" in frontend_app
-    assert "config?.jupyter?.enabled" in frontend_app
-    assert "Open Jupyter Workspace" in frontend_app
+    assert "Data Workbench" in frontend_shell
+    assert "Notebook Workspace" in frontend_shell
+    assert "config?.jupyter?.enabled" in frontend_shell
+    assert "Open Jupyter Workspace" in frontend_shell
 
     assert "# Notebooks" in notebooks_readme
 

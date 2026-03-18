@@ -21,7 +21,7 @@ def test_generated_device_bridge_vertical_slice(tmp_path):
 
     app_config = (output_root / "backend" / "app_config.py").read_text(encoding="utf-8")
     compose = (output_root / "docker-compose.yml").read_text(encoding="utf-8")
-    frontend_app = (output_root / "frontend" / "src" / "App.jsx").read_text(encoding="utf-8")
+    frontend_shell = (output_root / "frontend" / "src" / "generated" / "AppShell.jsx").read_text(encoding="utf-8")
 
     device_readme = (output_root / "device" / "README.md").read_text(encoding="utf-8")
     arduino_readme = (output_root / "device" / "arduino" / "README.md").read_text(encoding="utf-8")
@@ -46,9 +46,9 @@ def test_generated_device_bridge_vertical_slice(tmp_path):
     assert "celery:" not in compose
     assert "jupyter:" not in compose
 
-    assert "Device Ops Console" in frontend_app
-    assert "Device Bridge" in frontend_app
-    assert "Technician Actions" in frontend_app
+    assert "Device Ops Console" in frontend_shell
+    assert "Device Bridge" in frontend_shell
+    assert "Technician Actions" in frontend_shell
 
     assert "# Device Bridge" in device_readme
     assert "# Arduino Bridge" in arduino_readme

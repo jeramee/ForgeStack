@@ -21,7 +21,7 @@ def test_generated_voila_vertical_slice(tmp_path):
 
     app_config = (output_root / "backend" / "app_config.py").read_text(encoding="utf-8")
     compose = (output_root / "docker-compose.yml").read_text(encoding="utf-8")
-    frontend_app = (output_root / "frontend" / "src" / "App.jsx").read_text(encoding="utf-8")
+    frontend_shell = (output_root / "frontend" / "src" / "generated" / "AppShell.jsx").read_text(encoding="utf-8")
     voila_demo = (output_root / "notebooks" / "voila_demo.ipynb").read_text(encoding="utf-8")
 
     env_example = (output_root / ".env.example").read_text(encoding="utf-8")
@@ -39,9 +39,9 @@ def test_generated_voila_vertical_slice(tmp_path):
     assert "voila /home/jovyan/work/voila_demo.ipynb" in compose
     assert '"8866:8866"' in compose
 
-    assert "Notebook View Bridge" in frontend_app
-    assert "Open Voila View" in frontend_app
-    assert "config?.voila?.enabled" in frontend_app
+    assert "Notebook View Bridge" in frontend_shell
+    assert "Open Voila View" in frontend_shell
+    assert "config?.voila?.enabled" in frontend_shell
 
     assert '"nbformat": 4' in voila_demo
     assert "Hello from the ForgeStack Voila view bridge" in voila_demo

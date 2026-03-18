@@ -25,6 +25,10 @@ class ReactPlugin(Plugin):
             template="react/src/App.jsx"
         )
         ctx.plan.create_file(
+            "frontend/src/generated/AppShell.jsx",
+            template="react/src/generated/AppShell.jsx"
+        )
+        ctx.plan.create_file(
             "frontend/Dockerfile",
             template="react/Dockerfile"
         )

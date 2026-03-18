@@ -20,16 +20,16 @@ def test_generated_technician_console_vertical_slice(tmp_path):
     execute_plan(plan, output_root=output_root)
 
     app_config = (output_root / "backend" / "app_config.py").read_text(encoding="utf-8")
-    frontend_app = (output_root / "frontend" / "src" / "App.jsx").read_text(encoding="utf-8")
+    frontend_shell = (output_root / "frontend" / "src" / "generated" / "AppShell.jsx").read_text(encoding="utf-8")
 
     assert '"project_name": "TechnicianConsoleApp"' in app_config
     assert '"app_name": "technician-console"' in app_config
     assert '"technician_console": True' in app_config
     assert '"quick_actions": True' in app_config
 
-    assert "Technician Console" in frontend_app
-    assert "Queue Summary" in frontend_app
-    assert "Quick Actions" in frontend_app
-    assert "Work Items" in frontend_app
-    assert "/items" in frontend_app
-    assert "/items/seed" in frontend_app
+    assert "Technician Console" in frontend_shell
+    assert "Queue Summary" in frontend_shell
+    assert "Quick Actions" in frontend_shell
+    assert "Work Items" in frontend_shell
+    assert "/items" in frontend_shell
+    assert "/items/seed" in frontend_shell

@@ -22,7 +22,7 @@ def test_generated_async_vertical_slice(tmp_path):
     execute_plan(plan, output_root=output_root)
 
     backend_main = (output_root / "backend" / "main.py").read_text(encoding="utf-8")
-    frontend_app = (output_root / "frontend" / "src" / "App.jsx").read_text(encoding="utf-8")
+    frontend_shell = (output_root / "frontend" / "src" / "generated" / "AppShell.jsx").read_text(encoding="utf-8")
     celery_tasks = (output_root / "backend" / "tasks.py").read_text(encoding="utf-8")
 
     # Backend should expose queue + polling endpoints
@@ -37,10 +37,10 @@ def test_generated_async_vertical_slice(tmp_path):
     assert '"worker": "celery"' in celery_tasks
 
     # Frontend should fetch config, queue task, and poll for result
-    assert "fetch(`${API_BASE}/config`)" in frontend_app
-    assert "fetch(`${API_BASE}/tasks/ping`" in frontend_app
-    assert "fetch(`${API_BASE}/tasks/${taskId}`)" in frontend_app
-    assert "setInterval" in frontend_app
-    assert "setTaskId" in frontend_app
-    assert "setTaskState" in frontend_app
-    assert "setTaskResult" in frontend_app
+    assert "fetch(`${API_BASE}/config`)" in frontend_shell
+    assert "fetch(`${API_BASE}/tasks/ping`" in frontend_shell
+    assert "fetch(`${API_BASE}/tasks/${taskId}`)" in frontend_shell
+    assert "setInterval" in frontend_shell
+    assert "setTaskId" in frontend_shell
+    assert "setTaskState" in frontend_shell
+    assert "setTaskResult" in frontend_shell

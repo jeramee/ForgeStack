@@ -23,6 +23,7 @@ def test_full_build_plan_outputs(tmp_path):
 
     backend_main = (output_root / "backend" / "main.py").read_text(encoding="utf-8")
     frontend_app = (output_root / "frontend" / "src" / "App.jsx").read_text(encoding="utf-8")
+    frontend_shell = (output_root / "frontend" / "src" / "generated" / "AppShell.jsx").read_text(encoding="utf-8")
     app_config = (output_root / "backend" / "app_config.py").read_text(encoding="utf-8")
 
     # Existing/full-stack output sanity
@@ -48,13 +49,16 @@ def test_full_build_plan_outputs(tmp_path):
     assert 'payload["result"]' in backend_main
 
     # M7 frontend async flow
-    assert "/config" in frontend_app
-    assert "/tasks/ping" in frontend_app
-    assert "/tasks/${taskId}" in frontend_app
-    assert "setInterval" in frontend_app
-    assert "setTaskState" in frontend_app
-    assert "setTaskResult" in frontend_app
+    assert "import AppShell from './generated/AppShell'" in frontend_app
+    assert "return <AppShell />" in frontend_app
 
+    assert "/config" in frontend_shell
+    assert "/tasks/ping" in frontend_shell
+    assert "/tasks/${taskId}" in frontend_shell
+    assert "setInterval" in frontend_shell
+    assert "setTaskState" in frontend_shell
+    assert "setTaskResult" in frontend_shell
+    
     compose = (output_root / "docker-compose.yml").read_text(encoding="utf-8")
     env_example = (output_root / ".env.example").read_text(encoding="utf-8")
     readme = (output_root / "README.md").read_text(encoding="utf-8")
