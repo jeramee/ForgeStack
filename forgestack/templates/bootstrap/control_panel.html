@@ -1,0 +1,124 @@
+{% extends "bootstrap/base.html" %}
+
+{% block content %}
+<div class="row g-3 mb-4">
+  {% for panel in panels %}
+  <div class="col-12 col-md-6 col-xl-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h2 class="h5 card-title mb-0">{{ panel.title }}</h2>
+          <span class="badge text-bg-primary">{{ panel.kind or "panel" }}</span>
+        </div>
+
+        {% if panel.label %}
+        <div class="small text-uppercase text-muted mb-2">{{ panel.label }}</div>
+        {% endif %}
+
+        {% if panel.headline %}
+        <p class="text-muted small mb-3">{{ panel.headline }}</p>
+        {% endif %}
+
+        <dl class="row small mb-0">
+          <dt class="col-5 text-muted">Panel ID</dt>
+          <dd class="col-7">{{ panel.id }}</dd>
+
+          <dt class="col-5 text-muted">Status</dt>
+          <dd class="col-7">
+            <span class="badge text-bg-success">{{ panel.status or "ready" }}</span>
+          </dd>
+
+          {% if panel.route %}
+          <dt class="col-5 text-muted">Route</dt>
+          <dd class="col-7">
+            <code>{{ panel.route }}</code>
+          </dd>
+          {% endif %}
+        </dl>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="row g-3">
+  <div class="col-12 col-xl-5">
+    <div class="card shadow-sm h-100">
+      <div class="card-header">
+        <strong>Control Panel Summary</strong>
+      </div>
+      <div class="card-body">
+        {% if summary %}
+        <div class="row g-2">
+          {% for key, value in summary.items() %}
+          <div class="col-12 col-sm-6">
+            <div class="border rounded p-2 bg-white h-100">
+              <div class="small text-muted">{{ key | replace("_", " ") | title }}</div>
+              <div class="fw-semibold">{{ value }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">No summary data available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-7">
+    <div class="card shadow-sm h-100">
+      <div class="card-header">
+        <strong>Section Inventory</strong>
+      </div>
+      <div class="card-body">
+        {% if control_panel.sections %}
+        <div class="table-responsive">
+          <table class="table table-sm align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Section</th>
+                <th>Available Payloads</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for section_key, section_payload in control_panel.sections.items() %}
+              <tr>
+                <td class="fw-semibold">{{ section_key }}</td>
+                <td>
+                  {% if section_payload %}
+                    {% for payload_key, payload_value in section_payload.items() %}
+                    <span class="badge text-bg-light border me-1 mb-1">{{ payload_key }}</span>
+                    {% endfor %}
+                  {% else %}
+                    <span class="text-muted">None</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">No section inventory available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if alerts %}
+<div class="mt-4">
+  {% for alert in alerts %}
+  <div class="alert alert-{{ alert.level or 'secondary' }}" role="alert">
+    {% if alert.title %}
+    <strong>{{ alert.title }}</strong>
+    {% endif %}
+    {% if alert.message %}
+    <span>{{ alert.message }}</span>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
